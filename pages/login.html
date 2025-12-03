@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Escolar - Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            overflow: hidden;
+        }
+
+        .login-wrapper {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            max-width: 100vw;
+        }
+
+        /* Painel esquerdo - Branding (ocupa o espaço disponível) */
+        .login-brand {
+            flex: 1;
+            min-width: 350px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .login-brand i {
+            font-size: 5.5rem;
+            margin-bottom: 24px;
+        }
+
+        .login-brand h1 {
+            font-size: 3.8rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .login-brand p {
+            font-size: 1.5rem;
+            opacity: 0.95;
+        }
+
+        /* Painel direito - Formulário com largura fixa e scroll */
+        .login-form-container {
+            width: 500px;
+            min-width: 500px;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            box-shadow: -10px 0 30px rgba(0,0,0,0.15);
+            overflow-y: auto;
+            padding: 40px 0;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 0 40px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .login-card-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .login-card-header h2 {
+            font-size: 2.2rem;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .login-card-header p {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 16px 16px;
+            border: 2px solid #dfe6e9;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.2);
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #95a5a6;
+            cursor: pointer;
+            font-size: 1.3rem;
+        }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0;
+            font-size: 0.98rem;
+        }
+
+        .form-options a {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        .form-options a:hover {
+            text-decoration: underline;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.15rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 16px;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #f1f2f6;
+            color: #2c3e50;
+        }
+
+        .btn-secondary:hover {
+            background: #dfe6e9;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 28px 0;
+            position: relative;
+            color: #95a5a6;
+            font-size: 0.95rem;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #dfe6e9;
+        }
+
+        .divider span {
+            background: white;
+            padding: 0 20px;
+        }
+
+        /* Contas de teste */
+        .test-accounts {
+            margin-top: 30px;
+            padding: 24px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border-left: 5px solid #3498db;
+        }
+
+        .test-accounts h4 {
+            margin-bottom: 16px;
+            color: #2c3e50;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+
+        .test-account-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .test-account-card {
+            background: white;
+            padding: 16px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #eee;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .test-account-role {
+            font-weight: bold;
+            font-size: 1rem;
+            margin-bottom: 6px;
+        }
+
+        .admin { color: #e74c3c; }
+        .teacher { color: #9b59b6; }
+        .student { color: #27ae60; }
+
+        .btn-sm {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 0.95rem;
+            background: #3498db;
+            color: white;
+        }
+
+        /* Responsivo - Mobile First */
+        @media (max-width: 992px) {
+            .login-wrapper {
+                flex-direction: column;
+            }
+            .login-brand {
+                min-height: 40vh;
+                padding: 60px 20px;
+            }
+            .login-brand h1 { font-size: 3rem; }
+            .login-form-container {
+                width: 100%;
+                min-width: unset;
+                padding: 40px 20px;
+                overflow-y: auto;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .login-card {
+                padding: 0 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-wrapper" data-testid="login-page">
+        <!-- Painel Esquerdo: Branding -->
+        <div class="login-brand">
+            <i class="fas fa-graduation-cap"></i>
+            <h1>Portal Escolar</h1>
+            <p>Sistema de Gestão Acadêmica</p>
+        </div>
+
+        <!-- Painel Direito: Formulário -->
+        <div class="login-form-container">
+            <div class="login-card">
+                <div class="login-card-header">
+                    <h2>Login</h2>
+                    <p>Entre com suas credenciais</p>
+                </div>
+
+                <form id="login-form" data-testid="login-form">
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <div class="input-group">
+                            <input type="email" id="login-email" class="form-control" placeholder="seu.email@escola.com" required data-testid="login-email-input">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Senha</label>
+                        <div class="input-group">
+                            <input type="password" id="login-password" class="form-control" placeholder="Digite sua senha" required minlength="6" data-testid="login-password-input">
+                            <button type="button" class="toggle-password" id="toggle-password-btn">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-options">
+                        <label><input type="checkbox" id="remember-me"> Lembrar-me</label>
+                        <a href="#" data-testid="forgot-password-link">Esqueci a senha</a>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" data-testid="login-submit-btn">
+                        Entrar
+                    </button>
+
+                    <div class="divider"><span>ou</span></div>
+
+                    <button type="button" class="btn btn-secondary" id="go-to-register-btn" data-testid="go-to-register-btn">
+                        Criar nova conta
+                    </button>
+
+                    <!-- Contas de teste -->
+                    <div class="test-accounts" data-testid="test-accounts-section">
+                        <h4>Contas para Teste QA</h4>
+                        <div class="test-account-grid">
+                            <div class="test-account-card" data-testid="test-admin-account">
+                                <div class="test-account-role admin">Admin</div>
+                                <div>admin@escola.com</div>
+                                <div>admin123</div>
+                                <button class="btn btn-sm" data-testid="fill-admin-btn">Preencher</button>
+                            </div>
+                            <div class="test-account-card" data-testid="test-teacher-account">
+                                <div class="test-account-role teacher">Professor</div>
+                                <div>professor@escola.com</div>
+                                <div>professor123</div>
+                                <button class="btn btn-sm" data-testid="fill-teacher-btn">Preencher</button>
+                            </div>
+                            <div class="test-account-card" data-testid="test-student-account">
+                                <div class="test-account-role student">Aluno</div>
+                                <div>aluno@escola.com</div>
+                                <div>aluno123</div>
+                                <button class="btn btn-sm" data-testid="fill-student-btn">Preencher</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const emailInput = document.getElementById('login-email');
+            const passwordInput = document.getElementById('login-password');
+            const toggleBtn = document.getElementById('toggle-password-btn');
+
+            toggleBtn.addEventListener('click', () => {
+                const type = passwordInput.type === 'password' ? 'text' : 'password';
+                passwordInput.type = type;
+                toggleBtn.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+            });
+
+            document.querySelectorAll('[data-testid^="fill-"]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const map = {
+                        'fill-admin-btn': ['admin@escola.com', 'admin123'],
+                        'fill-teacher-btn': ['professor@escola.com', 'professor123'],
+                        'fill-student-btn': ['aluno@escola.com', 'aluno123']
+                    };
+                    const [email, pass] = map[btn.dataset.testid];
+                    emailInput.value = email;
+                    passwordInput.value = pass;
+                });
+            });
+
+            document.getElementById('login-form').addEventListener('submit', e => {
+                e.preventDefault();
+                const email = emailInput.value.trim();
+                const pass = passwordInput.value;
+                const validUsers = {
+                    'admin@escola.com': 'admin123',
+                    'professor@escola.com': 'professor123',
+                    'aluno@escola.com': 'aluno123'
+                };
+                if (validUsers[email] === pass) {
+                    alert('Login realizado com sucesso!');
+                    window.location.href = 'dashboard.html';
+                } else {
+                    alert('Email ou senha incorretos');
+                }
+            });
+
+            document.getElementById('go-to-register-btn').addEventListener('click', () => {
+                window.location.href = '../pages/register.html';
+            });
+
+        });
+    </script>
+</body>
+</html>

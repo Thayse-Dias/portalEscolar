@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Escolar - Alunos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+    <div class="dashboard-container" data-testid="alunos-page">
+        <!-- Sidebar -->
+        <aside class="sidebar" data-testid="sidebar">
+            <!-- Mesma sidebar do dashboard -->
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-graduation-cap"></i>
+                    <h2>Portal Escolar</h2>
+                </div>
+                <button class="toggle-sidebar" data-testid="toggle-sidebar-btn">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="dashboard.html" data-testid="nav-dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                    <li><a href="#" class="active" data-testid="nav-alunos"><i class="fas fa-user-graduate"></i> Alunos</a></li>
+                    <li><a href="professores.html" data-testid="nav-professores"><i class="fas fa-chalkboard-teacher"></i> Professores</a></li>
+                    <li><a href="cursos.html" data-testid="nav-cursos"><i class="fas fa-graduation-cap"></i> Cursos</a></li>
+                    <li><a href="#" data-testid="nav-notas"><i class="fas fa-chart-line"></i> Notas</a></li>
+                </ul>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button class="btn btn-logout" data-testid="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i> Sair
+                </button>
+            </div>
+        </aside>
+        
+        <!-- Conteúdo principal -->
+        <main class="main-content">
+            <header class="main-header">
+                <div class="header-left">
+                    <h1 data-testid="page-title">Alunos</h1>
+                    <nav class="breadcrumb">
+                        <a href="dashboard.html">Dashboard</a> / <span>Alunos</span>
+                    </nav>
+                </div>
+            </header>
+            
+            <div class="content-wrapper">
+                <!-- Barra de ferramentas -->
+                <div class="toolbar" data-testid="alunos-toolbar">
+                    <div class="toolbar-left">
+                        <div class="search-box">
+                            <input 
+                                type="text" 
+                                id="search-alunos" 
+                                placeholder="Buscar alunos..."
+                                data-testid="search-alunos-input"
+                            >
+                            <button class="search-btn" data-testid="search-alunos-btn">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                        
+                        <select class="filter-select" id="filter-curso" data-testid="filter-curso-select">
+                            <option value="">Todos os cursos</option>
+                            <option value="engenharia-software">Engenharia de Software</option>
+                            <option value="ciencia-computacao">Ciência da Computação</option>
+                            <option value="ads">Análise e Desenvolvimento de Sistemas</option>
+                            <option value="sistemas-informacao">Sistemas de Informação</option>
+                        </select>
+                        
+                        <select class="filter-select" id="filter-status" data-testid="filter-status-select">
+                            <option value="">Todos os status</option>
+                            <option value="ativo">Ativo</option>
+                            <option value="inativo">Inativo</option>
+                            <option value="trancado">Trancado</option>
+                        </select>
+                    </div>
+                    
+                    <div class="toolbar-right">
+                        <button class="btn btn-primary" id="add-aluno-btn" data-testid="add-aluno-btn">
+                            <i class="fas fa-user-plus"></i> Adicionar Aluno
+                        </button>
+                        <button class="btn btn-secondary" id="export-alunos-btn" data-testid="export-alunos-btn">
+                            <i class="fas fa-download"></i> Exportar
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Tabela de alunos -->
+                <div class="data-table-container" data-testid="alunos-table-container">
+                    <div class="table-responsive">
+                        <table class="data-table" id="alunos-table" data-testid="alunos-table">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <input type="checkbox" id="select-all" data-testid="select-all-checkbox">
+                                    </th>
+                                    <th data-sort="nome">Nome</th>
+                                    <th data-sort="matricula">Matrícula</th>
+                                    <th data-sort="curso">Curso</th>
+                                    <th data-sort="email">Email</th>
+                                    <th data-sort="status">Status</th>
+                                    <th data-sort="dataCadastro">Data de Cadastro</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="alunos-table-body" data-testid="alunos-table-body">
+                                <!-- Dados serão carregados via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Paginação -->
+                    <div class="pagination" data-testid="alunos-pagination">
+                        <div class="pagination-info" data-testid="pagination-info">
+                            Mostrando <span id="start-index">0</span>-<span id="end-index">0</span> de <span id="total-alunos">0</span> alunos
+                        </div>
+                        <div class="pagination-controls">
+                            <button class="pagination-btn" id="first-page" data-testid="first-page-btn" disabled>
+                                <i class="fas fa-angle-double-left"></i>
+                            </button>
+                            <button class="pagination-btn" id="prev-page" data-testid="prev-page-btn" disabled>
+                                <i class="fas fa-angle-left"></i>
+                            </button>
+                            <div class="page-numbers" data-testid="page-numbers"></div>
+                            <button class="pagination-btn" id="next-page" data-testid="next-page-btn" disabled>
+                                <i class="fas fa-angle-right"></i>
+                            </button>
+                            <button class="pagination-btn" id="last-page" data-testid="last-page-btn" disabled>
+                                <i class="fas fa-angle-double-right"></i>
+                            </button>
+                        </div>
+                        <div class="pagination-size">
+                            <select id="page-size" data-testid="page-size-select">
+                                <option value="10">10 por página</option>
+                                <option value="25">25 por página</option>
+                                <option value="50">50 por página</option>
+                                <option value="100">100 por página</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Controles em massa -->
+                <div class="bulk-actions" data-testid="bulk-actions" style="display: none;">
+                    <div class="bulk-info" data-testid="bulk-selected-info">
+                        <span id="selected-count">0</span> aluno(s) selecionado(s)
+                    </div>
+                    <div class="bulk-buttons">
+                        <button class="btn btn-sm btn-secondary" id="bulk-edit" data-testid="bulk-edit-btn">
+                            <i class="fas fa-edit"></i> Editar
+                        </button>
+                        <button class="btn btn-sm btn-danger" id="bulk-delete" data-testid="bulk-delete-btn">
+                            <i class="fas fa-trash"></i> Excluir
+                        </button>
+                        <button class="btn btn-sm btn-outline" id="clear-selection" data-testid="clear-selection-btn">
+                            <i class="fas fa-times"></i> Limpar seleção
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Modal para adicionar/editar aluno -->
+    <div class="modal" id="aluno-modal" data-testid="aluno-modal">
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h3 id="modal-title">Adicionar Aluno</h3>
+                <button class="close-modal" data-testid="close-aluno-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="aluno-form-modal" data-testid="aluno-form-modal">
+                    <input type="hidden" id="aluno-id">
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="modal-nome" class="form-label required">Nome Completo</label>
+                            <input type="text" id="modal-nome" class="form-control" required data-testid="modal-nome-input">
+                            <div class="error-message" data-testid="modal-nome-error"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="modal-email" class="form-label required">Email</label>
+                            <input type="email" id="modal-email" class="form-control" required data-testid="modal-email-input">
+                            <div class="error-message" data-testid="modal-email-error"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="modal-cpf" class="form-label required">CPF</label>
+                            <input type="text" id="modal-cpf" class="form-control" required data-testid="modal-cpf-input">
+                            <div class="error-message" data-testid="modal-cpf-error"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="modal-data-nascimento" class="form-label required">Data de Nascimento</label>
+                            <input type="date" id="modal-data-nascimento" class="form-control" required data-testid="modal-data-nascimento-input">
+                            <div class="error-message" data-testid="modal-data-nascimento-error"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="modal-curso" class="form-label required">Curso</label>
+                            <select id="modal-curso" class="form-control" required data-testid="modal-curso-select">
+                                <option value="">Selecione um curso</option>
+                                <option value="engenharia-software">Engenharia de Software</option>
+                                <option value="ciencia-computacao">Ciência da Computação</option>
+                                <option value="ads">Análise e Desenvolvimento de Sistemas</option>
+                                <option value="sistemas-informacao">Sistemas de Informação</option>
+                            </select>
+                            <div class="error-message" data-testid="modal-curso-error"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="modal-matricula" class="form-label">Matrícula</label>
+                            <input type="text" id="modal-matricula" class="form-control" data-testid="modal-matricula-input">
+                            <div class="error-message" data-testid="modal-matricula-error"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="modal-telefone" class="form-label">Telefone</label>
+                            <input type="text" id="modal-telefone" class="form-control" data-testid="modal-telefone-input">
+                            <div class="error-message" data-testid="modal-telefone-error"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="modal-status" class="form-label">Status</label>
+                            <select id="modal-status" class="form-control" data-testid="modal-status-select">
+                                <option value="ativo">Ativo</option>
+                                <option value="inativo">Inativo</option>
+                                <option value="trancado">Trancado</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="modal-endereco" class="form-label">Endereço</label>
+                        <textarea id="modal-endereco" class="form-control" rows="2" data-testid="modal-endereco-textarea"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-testid="cancel-aluno-btn">Cancelar</button>
+                <button class="btn btn-primary" id="save-aluno-btn" data-testid="save-aluno-btn">Salvar</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de confirmação de exclusão -->
+    <div class="modal" id="confirm-delete-modal" data-testid="confirm-delete-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-exclamation-triangle warning"></i> Confirmar Exclusão</h3>
+                <button class="close-modal" data-testid="close-delete-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="delete-message">Tem certeza que deseja excluir este aluno?</p>
+                <div class="alert alert-warning" data-testid="delete-warning">
+                    <i class="fas fa-exclamation-circle"></i>
+                    Esta ação não pode ser desfeita.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-testid="cancel-delete-btn">Cancelar</button>
+                <button class="btn btn-danger" id="confirm-delete-btn" data-testid="confirm-delete-btn">Excluir</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="../js/utils.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/alunos.js"></script>
+    <script>
+        // Configuração de paginação
+        let currentPage = 1;
+        let pageSize = 10;
+        let totalPages = 1;
+        let currentFilter = {};
+        let selectedAlunos = new Set();
+        
+        // Verificar autenticação
+        if (!isAuthenticated()) {
+            window.location.href = '../index.html';
+        }
+        
+        // Inicializar página
+        document.addEventListener('DOMContentLoaded', () => {
+            loadAlunosTable();
+            setupEventListeners();
+            setupSorting();
+        });
+        
+        function loadAlunosTable() {
+            const alunos = getAlunos();
+            let filteredAlunos = filterAlunos(alunos);
+            
+            // Ordenar
+            const sortBy = localStorage.getItem('alunosSortBy') || 'nome';
+            const sortOrder = localStorage.getItem('alunosSortOrder') || 'asc';
+            filteredAlunos = sortAlunos(filteredAlunos, sortBy, sortOrder);
+            
+            // Calcular paginação
+            totalPages = Math.ceil(filteredAlunos.length / pageSize);
+            const startIndex = (currentPage - 1) * pageSize;
+            const endIndex = Math.min(startIndex + pageSize, filteredAlunos.length);
+            const pageAlunos = filteredAlunos.slice(startIndex, endIndex);
+            
+            // Atualizar tabela
+            updateTable(pageAlunos);
+            
+            // Atualizar informações de paginação
+            updatePaginationInfo(filteredAlunos.length, startIndex, endIndex);
+            updatePaginationControls();
+        }
+        
+        function filterAlunos(alunos) {
+            const searchTerm = document.getElementById('search-alunos').value.toLowerCase();
+            const cursoFilter = document.getElementById('filter-curso').value;
+            const statusFilter = document.getElementById('filter-status').value;
+            
+            return alunos.filter(aluno => {
+                // Busca
+                if (searchTerm && !aluno.nome.toLowerCase().includes(searchTerm) &&
+                    !aluno.email.toLowerCase().includes(searchTerm) &&
+                    !aluno.matricula?.toLowerCase().includes(searchTerm)) {
+                    return false;
+                }
+                
+                // Filtro de curso
+                if (cursoFilter && aluno.curso !== cursoFilter) {
+                    return false;
+                }
+                
+                // Filtro de status
+                if (statusFilter && aluno.status !== statusFilter) {
+                    return false;
+                }
+                
+                return true;
+            });
+        }
+        
+        function sortAlunos(alunos, sortBy, sortOrder) {
+            return [...alunos].sort((a, b) => {
+                let valueA = a[sortBy] || '';
+                let valueB = b[sortBy] || '';
+                
+                // Converter para string para comparação
+                valueA = String(valueA).toLowerCase();
+                valueB = String(valueB).toLowerCase();
+                
+                if (sortOrder === 'asc') {
+                    return valueA.localeCompare(valueB);
+                } else {
+                    return valueB.localeCompare(valueA);
+                }
+            });
+        }
+        
+        function updateTable(alunos) {
+            const tbody = document.getElementById('alunos-table-body');
+            
+            if (alunos.length === 0) {
+                tbody.innerHTML = `
+                    <tr data-testid="no-alunos-row">
+                        <td colspan="8" class="empty-state">
+                            <i class="fas fa-user-graduate"></i>
+                            <p>Nenhum aluno encontrado</p>
+                            <button class="btn btn-primary btn-sm" id="add-first-aluno" data-testid="add-first-aluno-btn">
+                                <i class="fas fa-user-plus"></i> Adicionar primeiro aluno
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tbody.innerHTML = alunos.map(aluno => `
+                <tr data-testid="aluno-row-${aluno.id}">
+                    <td>
+                        <input type="checkbox" class="select-aluno" value="${aluno.id}" 
+                               data-testid="select-aluno-${aluno.id}"
+                               ${selectedAlunos.has(aluno.id) ? 'checked' : ''}>
+                    </td>
+                    <td>
+                        <div class="user-cell">
+                            <div class="user-avatar small" style="background-color: ${getAlunoColor(aluno.id)}">
+                                ${aluno.nome.charAt(0).toUpperCase()}
+                            </div>
+                            <div class="user-info">
+                                <strong>${aluno.nome}</strong>
+                                <small>${aluno.email}</small>
+                            </div>
+                        </div>
+                    </td>
+                    <td>${aluno.matricula || 'N/A'}</td>
+                    <td>
+                        <span class="curso-badge ${aluno.curso}">
+                            ${getCursoNome(aluno.curso)}
+                        </span>
+                    </td>
+                    <td>${aluno.email}</td>
+                    <td>
+                        <span class="status-badge ${aluno.status || 'ativo'}">
+                            ${getStatusText(aluno.status || 'ativo')}
+                        </span>
+                    </td>
+                    <td>${formatDate(aluno.dataCadastro)}</td>
+                    <td>
+                        <div class="table-actions">
+                            <button class="btn-action view" data-testid="view-aluno-${aluno.id}" 
+                                    onclick="viewAluno(${aluno.id})">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn-action edit" data-testid="edit-aluno-${aluno.id}"
+                                    onclick="editAluno(${aluno.id})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn-action delete" data-testid="delete-aluno-${aluno.id}"
+                                    onclick="confirmDeleteAluno(${aluno.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        function updatePaginationInfo(total, start, end) {
+            document.getElementById('total-alunos').textContent = total;
+            document.getElementById('start-index').textContent = start + 1;
+            document.getElementById('end-index').textContent = end;
+        }
+        
+        function updatePaginationControls() {
+            const pageNumbers = document.querySelector('[data-testid="page-numbers"]');
+            const firstPageBtn = document.getElementById('first-page');
+            const prevPageBtn = document.getElementById('prev-page');
+            const nextPageBtn = document.getElementById('next-page');
+            const lastPageBtn = document.getElementById('last-page');
+            
+            // Limpar números de página
+            pageNumbers.innerHTML = '';
+            
+            // Gerar números de página
+            const maxPagesToShow = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+            let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+            
+            // Ajustar se não houver páginas suficientes
+            if (endPage - startPage + 1 < maxPagesToShow) {
+                startPage = Math.max(1, endPage - maxPagesToShow + 1);
+            }
+            
+            for (let i = startPage; i <= endPage; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.className = `pagination-btn ${i === currentPage ? 'active' : ''}`;
+                pageBtn.textContent = i;
+                pageBtn.setAttribute('data-testid', `page-${i}-btn`);
+                pageBtn.addEventListener('click', () => goToPage(i));
+                pageNumbers.appendChild(pageBtn);
+            }
+            
+            // Atualizar estado dos botões
+            firstPageBtn.disabled = currentPage === 1;
+            prevPageBtn.disabled = currentPage === 1;
+            nextPageBtn.disabled = currentPage === totalPages;
+            lastPageBtn.disabled = currentPage === totalPages;
+            
+            // Atualizar classes CSS para estado disabled
+            [firstPageBtn, prevPageBtn, nextPageBtn, lastPageBtn].forEach(btn => {
+                if (btn.disabled) {
+                    btn.classList.add('disabled');
+                } else {
+                    btn.classList.remove('disabled');
+                }
+            });
+        }
+        
+        function setupEventListeners() {
+            // Busca
+            const searchInput = document.getElementById('search-alunos');
+            const searchBtn = document.getElementById('search-alunos-btn');
+            
+            searchInput.addEventListener('input', debounce(() => {
+                currentPage = 1;
+                loadAlunosTable();
+            }, 300));
+            
+            searchBtn.addEventListener('click', () => {
+                currentPage = 1;
+                loadAlunosTable();
+            });
+            
+            // Filtros
+            document.getElementById('filter-curso').addEventListener('change', () => {
+                currentPage = 1;
+                loadAlunosTable();
+            });
+            
+            document.getElementById('filter-status').addEventListener('change', () => {
+                currentPage = 1;
+                loadAlunosTable();
+            });
+            
+            // Tamanho da página
+            document.getElementById('page-size').addEventListener('change', (e) => {
+                pageSize = parseInt(e.target.value);
+                currentPage = 1;
+                loadAlunosTable();
+            });
+            
+            // Controles de paginação
+            document.getElementById('first-page').addEventListener('click', () => goToPage(1));
+            document.getElementById('prev-page').addEventListener('click', () => goToPage(currentPage - 1));
+            document.getElementById('next-page').addEventListener('click', () => goToPage(currentPage + 1));
+            document.getElementById('last-page').addEventListener('click', () => goToPage(totalPages));
+            
+            // Adicionar aluno
+            document.getElementById('add-aluno-btn').addEventListener('click', () => openAlunoModal());
+            
+            // Selecionar todos
+            document.getElementById('select-all').addEventListener('change', (e) => {
+                const isChecked = e.target.checked;
+                const checkboxes = document.querySelectorAll('.select-aluno');
+                
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = isChecked;
+                    const alunoId = parseInt(checkbox.value);
+                    
+                    if (isChecked) {
+                        selectedAlunos.add(alunoId);
+                    } else {
+                        selectedAlunos.delete(alunoId);
+                    }
+                });
+                
+                updateBulkActions();
+            });
+            
+            // Exportar
+            document.getElementById('export-alunos-btn').addEventListener('click', exportAlunos);
+            
+            // Modal de aluno
+            const alunoModal = document.getElementById('aluno-modal');
+            const closeModalBtn = document.querySelector('[data-testid="close-aluno-modal"]');
+            const cancelBtn = document.querySelector('[data-testid="cancel-aluno-btn"]');
+            const saveBtn = document.getElementById('save-aluno-btn');
+            
+            [closeModalBtn, cancelBtn].forEach(btn => {
+                btn.addEventListener('click', () => alunoModal.style.display = 'none');
+            });
+            
+            saveBtn.addEventListener('click', saveAluno);
+            
+            // Modal de confirmação de exclusão
+            const deleteModal = document.getElementById('confirm-delete-modal');
+            const closeDeleteModal = document.querySelector('[data-testid="close-delete-modal"]');
+            const cancelDeleteBtn = document.querySelector('[data-testid="cancel-delete-btn"]');
+            
+            [closeDeleteModal, cancelDeleteBtn].forEach(btn => {
+                btn.addEventListener('click', () => deleteModal.style.display = 'none');
+            });
+            
+            // Fechar modais ao clicar fora
+            [alunoModal, deleteModal].forEach(modal => {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        modal.style.display = 'none';
+                    }
+                });
+            });
+            
+            // Adicionar primeiro aluno (quando não há alunos)
+            document.addEventListener('click', (e) => {
+                if (e.target.id === 'add-first-aluno') {
+                    openAlunoModal();
+                }
+            });
+        }
+        
+        function setupSorting() {
+            const headers = document.querySelectorAll('[data-sort]');
+            
+            headers.forEach(header => {
+                header.addEventListener('click', () => {
+                    const sortBy = header.getAttribute('data-sort');
+                    let sortOrder = 'asc';
+                    
+                    // Verificar ordem atual
+                    if (header.classList.contains('sort-asc')) {
+                        sortOrder = 'desc';
+                        header.classList.remove('sort-asc');
+                        header.classList.add('sort-desc');
+                    } else if (header.classList.contains('sort-desc')) {
+                        sortOrder = 'asc';
+                        header.classList.remove('sort-desc');
+                        header.classList.add('sort-asc');
+                    } else {
+                        // Remover classes de outros headers
+                        headers.forEach(h => {
+                            h.classList.remove('sort-asc', 'sort-desc');
+                        });
+                        header.classList.add('sort-asc');
+                    }
+                    
+                    // Salvar preferências
+                    localStorage.setItem('alunosSortBy', sortBy);
+                    localStorage.setItem('alunosSortOrder', sortOrder);
+                    
+                    // Recarregar tabela
+                    loadAlunosTable();
+                });
+            });
+        }
+        
+        function goToPage(page) {
+            if (page >= 1 && page <= totalPages && page !== currentPage) {
+                currentPage = page;
+                loadAlunosTable();
+            }
+        }
+        
+        function updateBulkActions() {
+            const bulkActions = document.querySelector('[data-testid="bulk-actions"]');
+            const selectedCount = document.getElementById('selected-count');
+            const selectAllCheckbox = document.getElementById('select-all');
+            
+            selectedCount.textContent = selectedAlunos.size;
+            
+            if (selectedAlunos.size > 0) {
+                bulkActions.style.display = 'flex';
+                
+                // Atualizar checkbox "selecionar todos"
+                const totalCheckboxes = document.querySelectorAll('.select-aluno').length;
+                const checkedCheckboxes = document.querySelectorAll('.select-aluno:checked').length;
+                selectAllCheckbox.indeterminate = checkedCheckboxes > 0 && checkedCheckboxes < totalCheckboxes;
+                selectAllCheckbox.checked = checkedCheckboxes === totalCheckboxes;
+            } else {
+                bulkActions.style.display = 'none';
+                selectAllCheckbox.indeterminate = false;
+            }
+            
+            // Configurar eventos dos botões de ações em massa
+            document.getElementById('bulk-edit').onclick = () => bulkEditAlunos();
+            document.getElementById('bulk-delete').onclick = () => bulkDeleteAlunos();
+            document.getElementById('clear-selection').onclick = () => clearSelection();
+        }
+        
+        function clearSelection() {
+            selectedAlunos.clear();
+            document.querySelectorAll('.select-aluno').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            updateBulkActions();
+        }
+        
+        function openAlunoModal(alunoId = null) {
+            const modal = document.getElementById('aluno-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const alunoIdInput = document.getElementById('aluno-id');
+            
+            // Resetar formulário
+            document.getElementById('aluno-form-modal').reset();
+            
+            if (alunoId) {
+                // Modo edição
+                modalTitle.textContent = 'Editar Aluno';
+                const aluno = getAlunoById(alunoId);
+                
+                if (aluno) {
+                    alunoIdInput.value = aluno.id;
+                    document.getElementById('modal-nome').value = aluno.nome;
+                    document.getElementById('modal-email').value = aluno.email;
+                    document.getElementById('modal-data-nascimento').value = aluno.dataNascimento;
+                    document.getElementById('modal-curso').value = aluno.curso;
+                    document.getElementById('modal-matricula').value = aluno.matricula || '';
+                    document.getElementById('modal-telefone').value = aluno.telefone || '';
+                    document.getElementById('modal-status').value = aluno.status || 'ativo';
+                    document.getElementById('modal-endereco').value = aluno.endereco || '';
+                }
+            } else {
+                // Modo adição
+                modalTitle.textContent = 'Adicionar Aluno';
+                alunoIdInput.value = '';
+                
+                // Gerar matrícula automática
+                const matricula = `AL${Date.now().toString().slice(-6)}`;
+                document.getElementById('modal-matricula').value = matricula;
+            }
+            
+            modal.style.display = 'flex';
+        }
+        
+        function saveAluno() {
+            const alunoId = document.getElementById('aluno-id').value;
+            const alunoData = {
+                nome: document.getElementById('modal-nome').value.trim(),
+                email: document.getElementById('modal-email').value.trim(),
+                dataNascimento: document.getElementById('modal-data-nascimento').value,
+                curso: document.getElementById('modal-curso').value,
+                matricula: document.getElementById('modal-matricula').value.trim(),
+                telefone: document.getElementById('modal-telefone').value.trim(),
+                status: document.getElementById('modal-status').value,
+                endereco: document.getElementById('modal-endereco').value.trim()
+            };
+            
+            // Validação
+            if (!validateAlunoForm(alunoData)) {
+                return;
+            }
+            
+            if (alunoId) {
+                // Atualizar aluno existente
+                updateAluno(parseInt(alunoId), alunoData);
+                showNotification('Aluno atualizado com sucesso!', 'success');
+            } else {
+                // Adicionar novo aluno
+                alunoData.dataCadastro = new Date().toISOString();
+                adicionarAluno(alunoData);
+                showNotification('Aluno adicionado com sucesso!', 'success');
+            }
+            
+            // Fechar modal e recarregar tabela
+            document.getElementById('aluno-modal').style.display = 'none';
+            loadAlunosTable();
+        }
+        
+        function validateAlunoForm(data) {
+            let isValid = true;
+            
+            // Validar nome
+            if (!data.nome) {
+                showFieldError('modal-nome', 'Nome é obrigatório');
+                isValid = false;
+            } else {
+                clearFieldError('modal-nome');
+            }
+            
+            // Validar email
+            if (!data.email || !validateEmail(data.email)) {
+                showFieldError('modal-email', 'Email inválido');
+                isValid = false;
+            } else {
+                clearFieldError('modal-email');
+            }
+            
+            // Validar data de nascimento
+            if (!data.dataNascimento) {
+                showFieldError('modal-data-nascimento', 'Data de nascimento é obrigatória');
+                isValid = false;
+            } else {
+                clearFieldError('modal-data-nascimento');
+            }
+            
+            // Validar curso
+            if (!data.curso) {
+                showFieldError('modal-curso', 'Selecione um curso');
+                isValid = false;
+            } else {
+                clearFieldError('modal-curso');
+            }
+            
+            return isValid;
+        }
+        
+        function showFieldError(fieldId, message) {
+            const field = document.getElementById(fieldId);
+            const errorElement = document.querySelector(`[data-testid="${fieldId}-error"]`);
+            if (errorElement) {
+                errorElement.textContent = message;
+                errorElement.style.display = 'block';
+                field.classList.add('error');
+            }
+        }
+        
+        function clearFieldError(fieldId) {
+            const field = document.getElementById(fieldId);
+            const errorElement = document.querySelector(`[data-testid="${fieldId}-error"]`);
+            if (errorElement) {
+                errorElement.textContent = '';
+                errorElement.style.display = 'none';
+                field.classList.remove('error');
+            }
+        }
+        
+        function viewAluno(id) {
+            const aluno = getAlunoById(id);
+            if (aluno) {
+                alert(`Detalhes do Aluno:\n\n` +
+                      `Nome: ${aluno.nome}\n` +
+                      `Email: ${aluno.email}\n` +
+                      `Data de Nascimento: ${formatDate(aluno.dataNascimento)}\n` +
+                      `Curso: ${getCursoNome(aluno.curso)}\n` +
+                      `Matrícula: ${aluno.matricula || 'N/A'}\n` +
+                      `Status: ${getStatusText(aluno.status || 'ativo')}\n` +
+                      `Data de Cadastro: ${formatDate(aluno.dataCadastro)}`);
+            }
+        }
+        
+        function editAluno(id) {
+            openAlunoModal(id);
+        }
+        
+        function confirmDeleteAluno(id, bulk = false) {
+            const modal = document.getElementById('confirm-delete-modal');
+            const message = document.getElementById('delete-message');
+            
+            if (bulk) {
+                message.textContent = `Tem certeza que deseja excluir ${selectedAlunos.size} aluno(s) selecionado(s)?`;
+            } else {
+                const aluno = getAlunoById(id);
+                message.textContent = `Tem certeza que deseja excluir o aluno "${aluno.nome}"?`;
+            }
+            
+            // Configurar botão de confirmação
+            const confirmBtn = document.getElementById('confirm-delete-btn');
+            confirmBtn.onclick = () => {
+                if (bulk) {
+                    bulkDeleteAlunosConfirm();
+                } else {
+                    deleteAlunoConfirm(id);
+                }
+                modal.style.display = 'none';
+            };
+            
+            modal.style.display = 'flex';
+        }
+        
+        function deleteAlunoConfirm(id) {
+            if (deletarAluno(id)) {
+                showNotification('Aluno excluído com sucesso!', 'success');
+                loadAlunosTable();
+                
+                // Remover da seleção se estiver selecionado
+                selectedAlunos.delete(id);
+                updateBulkActions();
+            } else {
+                showNotification('Erro ao excluir aluno', 'error');
+            }
+        }
+        
+        function bulkEditAlunos() {
+            showNotification('Funcionalidade de edição em massa em desenvolvimento', 'info');
+        }
+        
+        function bulkDeleteAlunos() {
+            if (selectedAlunos.size > 0) {
+                confirmDeleteAluno(null, true);
+            }
+        }
+        
+        function bulkDeleteAlunosConfirm() {
+            let successCount = 0;
+            let errorCount = 0;
+            
+            selectedAlunos.forEach(id => {
+                if (deletarAluno(id)) {
+                    successCount++;
+                } else {
+                    errorCount++;
+                }
+            });
+            
+            // Limpar seleção
+            clearSelection();
+            
+            // Mostrar resultado
+            if (successCount > 0) {
+                showNotification(`${successCount} aluno(s) excluído(s) com sucesso!`, 'success');
+            }
+            if (errorCount > 0) {
+                showNotification(`Erro ao excluir ${errorCount} aluno(s)`, 'error');
+            }
+            
+            // Recarregar tabela
+            loadAlunosTable();
+        }
+        
+        function exportAlunos() {
+            const alunos = getAlunos();
+            
+            // Criar CSV
+            let csv = 'Nome,Matrícula,Email,Curso,Status,Data de Cadastro\n';
+            
+            alunos.forEach(aluno => {
+                csv += `"${aluno.nome}","${aluno.matricula || ''}","${aluno.email}","${getCursoNome(aluno.curso)}","${getStatusText(aluno.status || 'ativo')}","${formatDate(aluno.dataCadastro)}"\n`;
+            });
+            
+            // Criar blob e download
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', `alunos_${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.visibility = 'hidden';
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showNotification('Exportação iniciada!', 'success');
+        }
+        
+        // Funções utilitárias
+        function getAlunoColor(id) {
+            const colors = ['#3498db', '#2ecc71', '#e74c3c', '#f39c12', '#9b59b6', '#1abc9c'];
+            return colors[id % colors.length];
+        }
+        
+        function getCursoNome(cursoKey) {
+            const cursos = {
+                'engenharia-software': 'Engenharia de Software',
+                'ciencia-computacao': 'Ciência da Computação',
+                'ads': 'Análise e Desenvolvimento de Sistemas',
+                'sistemas-informacao': 'Sistemas de Informação'
+            };
+            return cursos[cursoKey] || cursoKey;
+        }
+        
+        function getStatusText(status) {
+            const statusMap = {
+                'ativo': 'Ativo',
+                'inativo': 'Inativo',
+                'trancado': 'Trancado'
+            };
+            return statusMap[status] || status;
+        }
+        
+        function formatDate(dateString) {
+            try {
+                const date = new Date(dateString);
+                return date.toLocaleDateString('pt-BR');
+            } catch {
+                return dateString;
+            }
+        }
+        
+        function validateEmail(email) {
+            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return regex.test(email);
+        }
+        
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+        
+        function showNotification(message, type = 'info') {
+            // Implementação simplificada
+            alert(`${type.toUpperCase()}: ${message}`);
+        }
+    </script>
+</body>
+</html>

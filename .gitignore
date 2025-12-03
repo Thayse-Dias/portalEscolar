@@ -1,0 +1,26 @@
+# Node
+node_modules/
+npm-debug.log
+yarn-debug.log*
+yarn-error.log*
+
+# Cypress
+/cypress/screenshots/
+/cypress/videos/
+/cypress/downloads/
+/cypress/reports/
+cypress.env.json
+
+# Ambiente
+.env
+.env.local
+
+# IDEs e OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Cache e temp
+/.cache
+/.temp

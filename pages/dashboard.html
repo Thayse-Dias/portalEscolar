@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Escolar - Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+    <!-- Estrutura principal com sidebar -->
+    <div class="dashboard-container" data-testid="dashboard-page">
+        <!-- Sidebar -->
+        <aside class="sidebar" data-testid="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-graduation-cap"></i>
+                    <h2>Portal Escolar</h2>
+                </div>
+                <button class="toggle-sidebar" data-testid="toggle-sidebar-btn">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            
+            <!-- Perfil do usuário -->
+            <div class="user-profile" data-testid="user-profile">
+                <div class="user-avatar" data-testid="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="user-info">
+                    <h4 data-testid="user-name">Carregando...</h4>
+                    <span class="user-role" data-testid="user-role">Usuário</span>
+                </div>
+            </div>
+            
+            <!-- Menu de navegação -->
+            <nav class="sidebar-nav" data-testid="sidebar-nav">
+                <ul>
+                    <li>
+                        <a href="#" class="nav-item active" data-testid="nav-dashboard">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="alunos.html" class="nav-item" data-testid="nav-alunos">
+                            <i class="fas fa-user-graduate"></i>
+                            <span>Alunos</span>
+                            <span class="badge" data-testid="alunos-count">0</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="professores.html" class="nav-item" data-testid="nav-professores">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                            <span>Professores</span>
+                            <span class="badge" data-testid="professores-count">0</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="cursos.html" class="nav-item" data-testid="nav-cursos">
+                            <i class="fas fa-graduation-cap"></i>
+                            <span>Cursos</span>
+                            <span class="badge" data-testid="cursos-count">4</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-item" data-testid="nav-notas">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Notas</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-item" data-testid="nav-calendario">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>Calendário</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-item" data-testid="nav-relatorios">
+                            <i class="fas fa-file-alt"></i>
+                            <span>Relatórios</span>
+                        </a>
+                    </li>
+                    <li class="nav-divider"></li>
+                    <li>
+                        <a href="#" class="nav-item" data-testid="nav-configuracoes">
+                            <i class="fas fa-cog"></i>
+                            <span>Configurações</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-item" data-testid="nav-ajuda">
+                            <i class="fas fa-question-circle"></i>
+                            <span>Ajuda</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- Rodapé do sidebar -->
+            <div class="sidebar-footer">
+                <button class="btn btn-logout" data-testid="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Sair</span>
+                </button>
+                <div class="version-info" data-testid="dashboard-version">
+                    v1.0.0
+                </div>
+            </div>
+        </aside>
+        
+        <!-- Conteúdo principal -->
+        <main class="main-content" data-testid="main-content">
+            <!-- Header -->
+            <header class="main-header">
+                <div class="header-left">
+                    <h1 data-testid="page-title">Dashboard</h1>
+                    <nav class="breadcrumb" data-testid="breadcrumb">
+                        <a href="#">Home</a> / <span>Dashboard</span>
+                    </nav>
+                </div>
+                <div class="header-right">
+                    <!-- Barra de busca -->
+                    <div class="search-box" data-testid="search-box">
+                        <input 
+                            type="text" 
+                            placeholder="Buscar..."
+                            data-testid="search-input"
+                        >
+                        <button class="search-btn" data-testid="search-btn">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Notificações -->
+                    <div class="notification-dropdown" data-testid="notification-dropdown">
+                        <button class="notification-btn" data-testid="notification-btn">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-badge" data-testid="notification-count">3</span>
+                        </button>
+                        <div class="notification-menu" data-testid="notification-menu">
+                            <div class="notification-header">
+                                <h4>Notificações</h4>
+                                <button class="mark-all-read" data-testid="mark-all-read-btn">
+                                    Marcar todas como lidas
+                                </button>
+                            </div>
+                            <div class="notification-list" data-testid="notification-list">
+                                <!-- Notificações serão carregadas aqui -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Conteúdo do dashboard -->
+            <div class="content-wrapper" data-testid="content-wrapper">
+                <!-- Cards de estatísticas -->
+                <div class="stats-cards" data-testid="stats-cards">
+                    <div class="stats-card" data-testid="stats-alunos">
+                        <div class="stats-icon alunos">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                        <div class="stats-info">
+                            <h3 data-testid="total-alunos">0</h3>
+                            <p>Alunos</p>
+                        </div>
+                        <div class="stats-trend positive" data-testid="alunos-trend">
+                            <i class="fas fa-arrow-up"></i> 12%
+                        </div>
+                    </div>
+                    
+                    <div class="stats-card" data-testid="stats-professores">
+                        <div class="stats-icon professores">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                        </div>
+                        <div class="stats-info">
+                            <h3 data-testid="total-professores">0</h3>
+                            <p>Professores</p>
+                        </div>
+                        <div class="stats-trend positive" data-testid="professores-trend">
+                            <i class="fas fa-arrow-up"></i> 5%
+                        </div>
+                    </div>
+                    
+                    <div class="stats-card" data-testid="stats-cursos">
+                        <div class="stats-icon cursos">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <div class="stats-info">
+                            <h3 data-testid="total-cursos">4</h3>
+                            <p>Cursos</p>
+                        </div>
+                        <div class="stats-trend neutral" data-testid="cursos-trend">
+                            <i class="fas fa-minus"></i> 0%
+                        </div>
+                    </div>
+                    
+                    <div class="stats-card" data-testid="stats-matriculas">
+                        <div class="stats-icon matriculas">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
+                        <div class="stats-info">
+                            <h3 data-testid="total-matriculas">0</h3>
+                            <p>Matrículas</p>
+                        </div>
+                        <div class="stats-trend positive" data-testid="matriculas-trend">
+                            <i class="fas fa-arrow-up"></i> 8%
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Gráficos e tabelas -->
+                <div class="dashboard-grid" data-testid="dashboard-grid">
+                    <!-- Gráfico de distribuição de alunos por curso -->
+                    <div class="dashboard-card" data-testid="alunos-por-curso-chart">
+                        <div class="card-header">
+                            <h3><i class="fas fa-chart-pie"></i> Alunos por Curso</h3>
+                            <select class="chart-filter" data-testid="chart-period-select">
+                                <option value="month">Este mês</option>
+                                <option value="year">Este ano</option>
+                            </select>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-placeholder" data-testid="chart-placeholder">
+                                <div class="chart-loading">
+                                    <div class="spinner"></div>
+                                    <p>Carregando gráfico...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Últimos alunos cadastrados -->
+                    <div class="dashboard-card" data-testid="ultimos-alunos-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-history"></i> Últimos Alunos Cadastrados</h3>
+                            <a href="alunos.html" class="view-all" data-testid="view-all-alunos">
+                                Ver todos
+                            </a>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive" data-testid="alunos-table">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Nome</th>
+                                            <th>Curso</th>
+                                            <th>Data de Cadastro</th>
+                                            <th>Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody data-testid="alunos-table-body">
+                                        <!-- Dados serão carregados via JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Atividades recentes -->
+                    <div class="dashboard-card" data-testid="atividades-recentes-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-bell"></i> Atividades Recentes</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="activity-timeline" data-testid="activity-timeline">
+                                <!-- Atividades serão carregadas aqui -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Calendário -->
+                    <div class="dashboard-card" data-testid="calendario-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-calendar-alt"></i> Calendário</h3>
+                            <div class="calendar-nav">
+                                <button class="btn btn-sm" data-testid="prev-month-btn">
+                                    <i class="fas fa-chevron-left"></i>
+                                </button>
+                                <span data-testid="current-month">Abril 2024</span>
+                                <button class="btn btn-sm" data-testid="next-month-btn">
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="calendar" data-testid="calendar">
+                                <!-- Calendário será gerado via JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Footer -->
+            <footer class="main-footer" data-testid="main-footer">
+                <p>Portal Escolar &copy; 2024 - Sistema de Testes QA</p>
+                <p data-testid="footer-info">Total de usuários: <span id="total-users">0</span> | Último acesso: <span id="last-access">--/--/----</span></p>
+            </footer>
+        </main>
+    </div>
+    
+    <!-- Modal de confirmação para logout -->
+    <div class="modal" id="logout-modal" data-testid="logout-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-sign-out-alt"></i> Confirmar Logout</h3>
+                <button class="close-modal" data-testid="close-logout-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Tem certeza que deseja sair do sistema?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-testid="cancel-logout-btn">
+                    Cancelar
+                </button>
+                <button class="btn btn-primary" data-testid="confirm-logout-btn">
+                    Sair
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="../js/utils.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/alunos.js"></script>
+    <script src="../js/professores.js"></script>
+    <script>
+        // Verificar autenticação
+        if (!isAuthenticated()) {
+            window.location.href = 'login.html';
+        }
+        
+        // Inicializar dashboard
+        document.addEventListener('DOMContentLoaded', () => {
+            // Carregar informações do usuário
+            loadUserInfo();
+            
+            // Carregar estatísticas
+            loadStatistics();
+            
+            // Carregar últimos alunos
+            loadLatestAlunos();
+            
+            // Carregar atividades
+            loadActivities();
+            
+            // Inicializar calendário
+            initCalendar();
+            
+            // Configurar eventos
+            setupEventListeners();
+        });
+        
+        function loadUserInfo() {
+            const user = getCurrentUser();
+            if (user) {
+                document.querySelector('[data-testid="user-name"]').textContent = user.nome;
+                document.querySelector('[data-testid="user-role"]').textContent = 
+                    user.tipo === 'admin' ? 'Administrador' : 
+                    user.tipo === 'professor' ? 'Professor' : 'Aluno';
+                
+                // Atualizar avatar
+                const avatar = document.querySelector('[data-testid="user-avatar"]');
+                avatar.innerHTML = user.nome.charAt(0).toUpperCase();
+                avatar.style.backgroundColor = getRandomColor();
+            }
+        }
+        
+        function loadStatistics() {
+            const alunos = getAlunos();
+            const professores = getProfessores();
+            
+            // Atualizar contadores
+            document.querySelector('[data-testid="total-alunos"]').textContent = alunos.length;
+            document.querySelector('[data-testid="total-professores"]').textContent = professores.length;
+            document.querySelector('[data-testid="alunos-count"]').textContent = alunos.length;
+            document.querySelector('[data-testid="professores-count"]').textContent = professores.length;
+            document.querySelector('[data-testid="total-matriculas"]').textContent = alunos.length;
+            
+            // Atualizar footer
+            document.getElementById('total-users').textContent = alunos.length + professores.length;
+            document.getElementById('last-access').textContent = new Date().toLocaleDateString('pt-BR');
+        }
+        
+        function loadLatestAlunos() {
+            const alunos = getAlunos();
+            const tableBody = document.querySelector('[data-testid="alunos-table-body"]');
+            
+            // Ordenar por data de cadastro (mais recentes primeiro)
+            const latestAlunos = [...alunos]
+                .sort((a, b) => new Date(b.dataCadastro) - new Date(a.dataCadastro))
+                .slice(0, 5);
+            
+            if (latestAlunos.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="empty-state">
+                            <i class="fas fa-user-graduate"></i>
+                            <p>Nenhum aluno cadastrado ainda</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tableBody.innerHTML = latestAlunos.map(aluno => `
+                <tr data-testid="aluno-row-${aluno.id}">
+                    <td>
+                        <div class="user-cell">
+                            <div class="user-avatar small" style="background-color: ${getRandomColor()}">
+                                ${aluno.nome.charAt(0).toUpperCase()}
+                            </div>
+                            <div class="user-info">
+                                <strong>${aluno.nome}</strong>
+                                <small>${aluno.email}</small>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="curso-badge ${aluno.curso}">
+                            ${getCursoNome(aluno.curso)}
+                        </span>
+                    </td>
+                    <td>
+                        ${formatDate(aluno.dataCadastro)}
+                    </td>
+                    <td>
+                        <div class="table-actions">
+                            <button class="btn-action view" data-testid="view-aluno-${aluno.id}">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn-action edit" data-testid="edit-aluno-${aluno.id}">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        function loadActivities() {
+            const activities = [
+                {
+                    id: 1,
+                    type: 'aluno',
+                    action: 'cadastrado',
+                    user: 'João Silva',
+                    time: 'há 5 minutos',
+                    icon: 'user-plus'
+                },
+                {
+                    id: 2,
+                    type: 'professor',
+                    action: 'atualizado',
+                    user: 'Maria Santos',
+                    time: 'há 1 hora',
+                    icon: 'user-edit'
+                },
+                {
+                    id: 3,
+                    type: 'nota',
+                    action: 'lançada',
+                    user: 'Sistemas de Informação',
+                    time: 'há 2 horas',
+                    icon: 'chart-line'
+                },
+                {
+                    id: 4,
+                    type: 'matricula',
+                    action: 'realizada',
+                    user: 'Pedro Costa',
+                    time: 'há 1 dia',
+                    icon: 'clipboard-check'
+                }
+            ];
+            
+            const timeline = document.querySelector('[data-testid="activity-timeline"]');
+            timeline.innerHTML = activities.map(activity => `
+                <div class="activity-item" data-testid="activity-${activity.id}">
+                    <div class="activity-icon ${activity.type}">
+                        <i class="fas fa-${activity.icon}"></i>
+                    </div>
+                    <div class="activity-content">
+                        <p><strong>${activity.user}</strong> foi ${activity.action}</p>
+                        <span class="activity-time">${activity.time}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function initCalendar() {
+            const calendar = document.querySelector('[data-testid="calendar"]');
+            const currentMonth = document.querySelector('[data-testid="current-month"]');
+            const now = new Date();
+            
+            currentMonth.textContent = formatMonth(now);
+            calendar.innerHTML = generateCalendarHTML(now);
+        }
+        
+        function generateCalendarHTML(date) {
+            const year = date.getFullYear();
+            const month = date.getMonth();
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            
+            let html = '<div class="calendar-header">';
+            ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].forEach(day => {
+                html += `<div class="calendar-day-header">${day}</div>`;
+            });
+            html += '</div><div class="calendar-days">';
+            
+            // Dias em branco no início
+            for (let i = 0; i < firstDay.getDay(); i++) {
+                html += '<div class="calendar-day empty"></div>';
+            }
+            
+            // Dias do mês
+            for (let day = 1; day <= lastDay.getDate(); day++) {
+                const isToday = day === new Date().getDate() && month === new Date().getMonth();
+                const hasEvent = Math.random() > 0.7; // Simulação de eventos
+                
+                html += `
+                    <div class="calendar-day ${isToday ? 'today' : ''} ${hasEvent ? 'has-event' : ''}" 
+                          data-testid="calendar-day-${day}">
+                        ${day}
+                        ${hasEvent ? '<span class="event-dot"></span>' : ''}
+                    </div>
+                `;
+            }
+            
+            html += '</div>';
+            return html;
+        }
+        
+        function setupEventListeners() {
+            // Toggle sidebar
+            const toggleSidebarBtn = document.querySelector('[data-testid="toggle-sidebar-btn"]');
+            toggleSidebarBtn.addEventListener('click', () => {
+                document.querySelector('[data-testid="sidebar"]').classList.toggle('collapsed');
+            });
+            
+            // Logout
+            const logoutBtn = document.querySelector('[data-testid="logout-btn"]');
+            const logoutModal = document.getElementById('logout-modal');
+            const cancelLogoutBtn = document.querySelector('[data-testid="cancel-logout-btn"]');
+            const confirmLogoutBtn = document.querySelector('[data-testid="confirm-logout-btn"]');
+            const closeLogoutModal = document.querySelector('[data-testid="close-logout-modal"]');
+            
+            logoutBtn.addEventListener('click', () => {
+                logoutModal.style.display = 'flex';
+            });
+            
+            [cancelLogoutBtn, closeLogoutModal].forEach(btn => {
+                btn.addEventListener('click', () => {
+                    logoutModal.style.display = 'none';
+                });
+            });
+            
+            confirmLogoutBtn.addEventListener('click', () => {
+                logout();
+                window.location.href = 'login.html';
+            });
+            
+            // Fechar modal ao clicar fora
+            logoutModal.addEventListener('click', (e) => {
+                if (e.target === logoutModal) {
+                    logoutModal.style.display = 'none';
+                }
+            });
+            
+            // Notificações
+            const notificationBtn = document.querySelector('[data-testid="notification-btn"]');
+            const notificationMenu = document.querySelector('[data-testid="notification-menu"]');
+            
+            notificationBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                notificationMenu.classList.toggle('show');
+            });
+            
+            // Fechar menu de notificações ao clicar fora
+            document.addEventListener('click', () => {
+                notificationMenu.classList.remove('show');
+            });
+            
+            // Busca
+            const searchBtn = document.querySelector('[data-testid="search-btn"]');
+            const searchInput = document.querySelector('[data-testid="search-input"]');
+            
+            searchBtn.addEventListener('click', () => {
+                performSearch(searchInput.value);
+            });
+            
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    performSearch(searchInput.value);
+                }
+            });
+            
+            // Navegação do calendário
+            const prevMonthBtn = document.querySelector('[data-testid="prev-month-btn"]');
+            const nextMonthBtn = document.querySelector('[data-testid="next-month-btn"]');
+            
+            let currentDate = new Date();
+            
+            prevMonthBtn.addEventListener('click', () => {
+                currentDate.setMonth(currentDate.getMonth() - 1);
+                updateCalendar(currentDate);
+            });
+            
+            nextMonthBtn.addEventListener('click', () => {
+                currentDate.setMonth(currentDate.getMonth() + 1);
+                updateCalendar(currentDate);
+            });
+        }
+        
+        function performSearch(query) {
+            if (query.trim()) {
+                // Em uma aplicação real, isso faria uma busca
+                showNotification(`Buscando por: "${query}"`, 'info');
+                
+                // Simular resultados
+                setTimeout(() => {
+                    showNotification('Nenhum resultado encontrado', 'warning');
+                }, 1000);
+            }
+        }
+        
+        function updateCalendar(date) {
+            const calendar = document.querySelector('[data-testid="calendar"]');
+            const currentMonth = document.querySelector('[data-testid="current-month"]');
+            
+            currentMonth.textContent = formatMonth(date);
+            calendar.innerHTML = generateCalendarHTML(date);
+        }
+        
+        // Funções utilitárias
+        function getRandomColor() {
+            const colors = [
+                '#3498db', '#2ecc71', '#e74c3c', '#f39c12',
+                '#9b59b6', '#1abc9c', '#d35400', '#c0392b'
+            ];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+        
+        function getCursoNome(cursoKey) {
+            const cursos = {
+                'engenharia-software': 'Engenharia de Software',
+                'ciencia-computacao': 'Ciência da Computação',
+                'ads': 'Análise e Desenvolvimento de Sistemas',
+                'sistemas-informacao': 'Sistemas de Informação'
+            };
+            return cursos[cursoKey] || cursoKey;
+        }
+        
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('pt-BR');
+        }
+        
+        function formatMonth(date) {
+            const months = [
+                'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+                'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+            ];
+            return `${months[date.getMonth()]} ${date.getFullYear()}`;
+        }
+        
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+                <span>${message}</span>
+                <button class="close-notification">&times;</button>
+            `;
+            
+            document.querySelector('[data-testid="main-content"]').appendChild(notification);
+            
+            // Remover após 5 segundos
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }, 5000);
+            
+            // Botão de fechar
+            notification.querySelector('.close-notification').addEventListener('click', () => {
+                notification.remove();
+            });
+        }
+    </script>
+</body>
+</html>

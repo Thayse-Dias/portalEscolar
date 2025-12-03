@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Escolar - Cadastro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+        .register-container {
+            max-width: 1200px;
+            width: 100%;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .register-header {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 50px 380px;
+          
+        }
+        .register-header h1 {
+            font-size: 2.8rem;
+        }
+        .register-card {
+            padding: 40px;
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        .register-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        .tab-btn {
+            min-width: 200px;
+            padding: 15px 30px;
+            border: none;
+            background: #f1f2f6;
+            color: #2c3e50;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .tab-btn.active {
+            background: #3498db;
+            color: white;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container" data-testid="register-page">
+        <div class="register-header">
+            <h1><i class="fas fa-user-plus"></i> Cadastro</h1>
+            <p class="subtitle">Crie sua conta no Portal Escolar</p>
+        </div>
+
+        <div class="register-card">
+            <div class="register-tabs" data-testid="register-tabs">
+                <button class="tab-btn active" data-tab="aluno" data-testid="tab-aluno">
+                    <i class="fas fa-user-graduate"></i> Aluno
+                </button>
+                <button class="tab-btn" data-tab="professor" data-testid="tab-professor">
+                    <i class="fas fa-chalkboard-teacher"></i> Professor
+                </button>
+            </div>
+
+            <!-- Formulário Aluno -->
+            <div class="tab-content active" data-tab="aluno">
+                <form id="aluno-form" class="register-form" data-testid="aluno-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label required"><i class="fas fa-user"></i> Nome Completo</label>
+                            <input type="text" id="aluno-nome" class="form-control" required data-testid="aluno-nome-input">
+                            <div class="error-message" data-testid="aluno-nome-error"></div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label required"><i class="fas fa-envelope"></i> Email</label>
+                            <input type="email" id="aluno-email" class="form-control" required data-testid="aluno-email-input">
+                            <div class="error-message" data-testid="aluno-email-error"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label required"><i class="fas fa-birthday-cake"></i> Data de Nascimento</label>
+                            <input type="date" id="aluno-data-nascimento" class="form-control" required data-testid="aluno-data-nascimento-input">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label required"><i class="fas fa-graduation-cap"></i> Curso</label>
+                            <select id="aluno-curso" class="form-control" required data-testid="aluno-curso-select">
+                                <option value="">Selecione um curso</option>
+                                <option value="engenharia-software">Engenharia de Software</option>
+                                <option value="ciencia-computacao">Ciência da Computação</option>
+                                <option value="ads">Análise e Desenvolvimento de Sistemas</option>
+                                <option value="sistemas-informacao">Sistemas da Informação</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label required"><i class="fas fa-lock"></i> Senha</label>
+                            <input type="password" id="aluno-senha" class="form-control" required minlength="6" data-testid="aluno-senha-input">
+                            <div class="password-strength" data-testid="aluno-password-strength">
+                                <div class="strength-bar"></div>
+                                <div class="strength-text">Força da senha: Fraca</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label required"><i class="fas fa-lock"></i> Confirmar Senha</label>
+                            <input type="password" id="aluno-confirmar-senha" class="form-control" required data-testid="aluno-confirmar-senha-input">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-checkbox">
+                            <input type="checkbox" id="aluno-termos" required data-testid="aluno-termos-checkbox">
+                            <span>Eu li e aceito os <a href="#">termos de uso</a> e <a href="#">política de privacidade</a></span>
+                        </label>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" data-testid="voltar-login-btn">
+                            <i class="fas fa-arrow-left"></i> Voltar
+                        </button>
+                        <button type="submit" class="btn btn-primary" data-testid="cadastrar-aluno-btn">
+                            <i class="fas fa-user-plus"></i> Cadastrar Aluno
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Formulário Professor -->
+            <div class="tab-content" data-tab="professor">
+                <form id="professor-form" class="register-form" data-testid="professor-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label required"><i class="fas fa-user"></i> Nome Completo</label>
+                            <input type="text" id="professor-nome" class="form-control" required data-testid="professor-nome-input">
+                            <div class="error-message" data-testid="professor-nome-error"></div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label required"><i class="fas fa-envelope"></i> Email</label>
+                            <input type="email" id="professor-email" class="form-control" required data-testid="professor-email-input">
+                            <div class="error-message" data-testid="professor-email-error"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label required"><i class="fas fa-birthday-cake"></i> Data de Nascimento</label>
+                            <input type="date" id="professor-data-nascimento" class="form-control" required data-testid="professor-data-nascimento-input">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label required"><i class="fas fa-book"></i> Disciplina</label>
+                            <select id="professor-disciplina" class="form-control" required data-testid="professor-disciplina-select">
+                                <option value="">Selecione uma disciplina</option>
+                                <option value="programacao">Programação e Algoritmo</option>
+                                <option value="dados">Banco de Dados</option>
+                                <option value="software">Engenharia de Software</option>
+                                <option value="redes">Redes de Computadores</option>
+                                <option value="qa">Quality Assurance</option>
+                                <option value="ingles">Inglês</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label required"><i class="fas fa-lock"></i> Senha</label>
+                            <input type="password" id="professor-senha" class="form-control" required minlength="6" data-testid="professor-senha-input">
+                            <div class="password-strength" data-testid="professor-password-strength">
+                                <div class="strength-bar"></div>
+                                <div class="strength-text">Força da senha: Fraca</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label required"><i class="fas fa-lock"></i> Confirmar Senha</label>
+                            <input type="password" id="professor-confirmar-senha" class="form-control" required data-testid="professor-confirmar-senha-input">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-checkbox">
+                            <input type="checkbox" id="professor-termos" required data-testid="professor-termos-checkbox">
+                            <span>Eu li e aceito os <a href="#">termos de uso</a> e <a href="#">política de privacidade</a></span>
+                        </label>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" data-testid="voltar-login-btn">
+                            <i class="fas fa-arrow-left"></i> Voltar
+                        </button>
+                        <button type="submit" class="btn btn-primary" data-testid="cadastrar-professor-btn">
+                            <i class="fas fa-user-plus"></i> Cadastrar Professor
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Alternar abas
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tab = btn.getAttribute('data-tab');
+                
+                // Atualizar botões
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                // Atualizar conteúdo
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                    if (content.getAttribute('data-tab') === tab) {
+                        content.classList.add('active');
+                    }
+                });
+            });
+        });
+        
+        // Botão Voltar
+        document.querySelector('[data-testid="voltar-login-btn"]').addEventListener('click', () => {
+            window.location.href = '../index.html';
+        });
+        
+        // Funções de validação
+        function validateEmail(email) {
+            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return regex.test(email);
+        }
+        
+        function showError(fieldId, message) {
+            const field = document.getElementById(fieldId);
+            const errorElement = document.querySelector(`[data-testid="${fieldId}-error"]`);
+            if (errorElement) {
+                errorElement.textContent = message;
+                errorElement.style.display = 'block';
+                field.classList.add('error');
+            }
+        }
+        
+        function clearError(fieldId) {
+            const field = document.getElementById(fieldId);
+            const errorElement = document.querySelector(`[data-testid="${fieldId}-error"]`);
+            if (errorElement) {
+                errorElement.textContent = '';
+                errorElement.style.display = 'none';
+                field.classList.remove('error');
+            }
+        }
+        
+        function validateAlunoForm() {
+            // Validação básica
+            const nome = document.getElementById('aluno-nome').value.trim();
+            const email = document.getElementById('aluno-email').value.trim();
+            const dataNascimento = document.getElementById('aluno-data-nascimento').value;
+            const curso = document.getElementById('aluno-curso').value;
+            const senha = document.getElementById('aluno-senha').value;
+            const confirmarSenha = document.getElementById('aluno-confirmar-senha').value;
+            const termos = document.getElementById('aluno-termos').checked;
+            
+            let isValid = true;
+            
+            if (!nome) {
+                showError('aluno-nome', 'Nome é obrigatório');
+                isValid = false;
+            } else {
+                clearError('aluno-nome');
+            }
+            
+            if (!email || !validateEmail(email)) {
+                showError('aluno-email', 'Email inválido');
+                isValid = false;
+            } else {
+                clearError('aluno-email');
+            }
+            
+            if (!dataNascimento) {
+                showError('aluno-data-nascimento', 'Data de nascimento é obrigatória');
+                isValid = false;
+            } else {
+                clearError('aluno-data-nascimento');
+            }
+            
+            if (!curso) {
+                showError('aluno-curso', 'Selecione um curso');
+                isValid = false;
+            } else {
+                clearError('aluno-curso');
+            }
+            
+            if (!senha || senha.length < 6) {
+                showError('aluno-senha', 'Senha deve ter pelo menos 6 caracteres');
+                isValid = false;
+            } else {
+                clearError('aluno-senha');
+            }
+            
+            if (senha !== confirmarSenha) {
+                showError('aluno-confirmar-senha', 'As senhas não coincidem');
+                isValid = false;
+            } else {
+                clearError('aluno-confirmar-senha');
+            }
+            
+            if (!termos) {
+                showError('aluno-termos', 'Você deve aceitar os termos');
+                isValid = false;
+            } else {
+                clearError('aluno-termos');
+            }
+            
+            return isValid;
+        }
+        
+        function validateProfessorForm() {
+            // Similar à validação do aluno, mas com os campos do professor
+            const nome = document.getElementById('professor-nome').value.trim();
+            const email = document.getElementById('professor-email').value.trim();
+            const dataNascimento = document.getElementById('professor-data-nascimento').value;
+            const disciplina = document.getElementById('professor-disciplina').value;
+            const senha = document.getElementById('professor-senha').value;
+            const confirmarSenha = document.getElementById('professor-confirmar-senha').value;
+            const termos = document.getElementById('professor-termos').checked;
+            
+            let isValid = true;
+            
+            if (!nome) {
+                showError('professor-nome', 'Nome é obrigatório');
+                isValid = false;
+            } else {
+                clearError('professor-nome');
+            }
+            
+            if (!email || !validateEmail(email)) {
+                showError('professor-email', 'Email inválido');
+                isValid = false;
+            } else {
+                clearError('professor-email');
+            }
+            
+            if (!dataNascimento) {
+                showError('professor-data-nascimento', 'Data de nascimento é obrigatória');
+                isValid = false;
+            } else {
+                clearError('professor-data-nascimento');
+            }
+            
+            if (!disciplina) {
+                showError('professor-disciplina', 'Disciplina é obrigatória');
+                isValid = false;
+            } else {
+                clearError('professor-disciplina');
+            }
+            
+            if (!senha || senha.length < 6) {
+                showError('professor-senha', 'Senha deve ter pelo menos 6 caracteres');
+                isValid = false;
+            } else {
+                clearError('professor-senha');
+            }
+            
+            if (senha !== confirmarSenha) {
+                showError('professor-confirmar-senha', 'As senhas não coincidem');
+                isValid = false;
+            } else {
+                clearError('professor-confirmar-senha');
+            }
+            
+            if (!termos) {
+                showError('professor-termos', 'Você deve aceitar os termos');
+                isValid = false;
+            } else {
+                clearError('professor-termos');
+            }
+            
+            return isValid;
+        }
+        
+        // Formulário de aluno
+        document.getElementById('aluno-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // Validar formulário
+            if (!validateAlunoForm()) {
+                return;
+            }
+            
+            // Obter dados do aluno
+            const aluno = {
+                nome: document.getElementById('aluno-nome').value,
+                email: document.getElementById('aluno-email').value,
+                dataNascimento: document.getElementById('aluno-data-nascimento').value,
+                curso: document.getElementById('aluno-curso').value,
+                senha: document.getElementById('aluno-senha').value,
+                dataCadastro: new Date().toISOString()
+            };
+            
+            // Salvar no localStorage
+            const alunos = JSON.parse(localStorage.getItem('alunos')) || [];
+            alunos.push(aluno);
+            localStorage.setItem('alunos', JSON.stringify(alunos));
+            
+            // Mostrar mensagem de sucesso e redirecionar
+            alert('Aluno cadastrado com sucesso!');
+            window.location.href = '../index.html';
+        });
+        
+        // Formulário de professor
+        document.getElementById('professor-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // Validar formulário
+            if (!validateProfessorForm()) {
+                return;
+            }
+            
+            // Obter dados do professor
+            const professor = {
+                nome: document.getElementById('professor-nome').value,
+                email: document.getElementById('professor-email').value,
+                dataNascimento: document.getElementById('professor-data-nascimento').value,
+                disciplina: document.getElementById('professor-disciplina').value,
+                senha: document.getElementById('professor-senha').value,
+                dataCadastro: new Date().toISOString()
+            };
+            
+            // Salvar no localStorage
+            const professores = JSON.parse(localStorage.getItem('professores')) || [];
+            professores.push(professor);
+            localStorage.setItem('professores', JSON.stringify(professores));
+            
+            // Mostrar mensagem de sucesso e redirecionar
+            alert('Professor cadastrado com sucesso!');
+            window.location.href = '../index.html';
+        });
+    </script>
+</body>
+</html>
