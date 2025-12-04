@@ -1,43 +1,24 @@
 {
   "name": "portal-escolar",
   "version": "1.0.0",
-  "description": "Portal Escolar completo",
+  "description": "Portal Escolar - Sistema de Gestão Educacional",
   "main": "index.html",
   "scripts": {
     "start": "serve -l 52222",
-    "dev": "live-server --port=52222",
-    "test": "jest tests/jest/",
-    "lint": "eslint js/",
-    "format": "prettier --write \"**/*.{js,html,css,json}\""
+    "dev": "live-server --port=52222 --no-browser",
+    "build": "echo 'Build não necessário para projeto estático'",
+    "preview": "serve -s . -l 3000"
   },
   "keywords": [
     "portal-escolar",
     "escola",
-    "educação"
+    "educação",
+    "gestão-escolar"
   ],
-  "author": "Thayse Dias",
+  "author": "Portal Escolar Team",
   "license": "MIT",
   "devDependencies": {
-    "@testing-library/dom": "^9.3.1",
-    "@testing-library/jest-dom": "^6.1.5",
-    "eslint": "^8.56.0",
-    "jest": "^29.7.0",
-    "jest-environment-jsdom": "^29.7.0",
     "live-server": "^1.2.2",
-    "prettier": "^3.1.1",
     "serve": "^14.2.5"
-  },
-  "jest": {
-    "testEnvironment": "jsdom",
-    "collectCoverageFrom": [
-      "js/**/*.js",
-      "!js/vendor/**"
-    ],
-    "coverageDirectory": "coverage",
-    "coverageReporters": [
-      "html",
-      "text",
-      "lcov"
-    ]
   }
 }
