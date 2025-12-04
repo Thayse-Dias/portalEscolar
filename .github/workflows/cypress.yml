@@ -1,0 +1,54 @@
+name: Cypress + Mochawesome Report
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  cypress:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Cache node modules & Cypress
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            ~/.cache/Cypress
+          key: ${{ runner.os }}-modules-${{ hashFiles('package-lock.json') }}
+          restore-keys: ${{ runner.os }}-modules-
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Cypress tests
+        run: npx cypress run
+
+      # Gera o relatório final bonito
+      - name: Generate Mochawesome Report
+        if: always()
+        run: |
+          npx mochawesome-merge "cypress/reports/mocha/*.json" > cypress/reports/mochareport.json
+          npx marge cypress/reports/mochareport.json --reportDir cypress/reports/html --inline
+
+      # Upload do relatório como artefato (você pode baixar sempre)
+      - name: Upload HTML Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mochawesome-report
+          path: cypress/reports/html
+
+      # Publica como GitHub Pages (acessível por link público!)
+      - name: Deploy Report to GitHub Pages
+        if: always()
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./cypress/reports/html
+          destination_dir: cypress-report

@@ -249,6 +249,29 @@ npm init -y
 ```bash
 npm install --save-dev cypress jest @testing-library/dom @testing-library/jest-dom eslint prettier husky lint-staged live-server
 ```
+3. Instale o servidor mais usado pela comunidade Cypress
+```bash
+npm install --save-dev serve
+```
+
+4. Inicia o servidor e só roda o Cypress quando a página estiver no ar
+```bash
+npm install --save-dev start-server-and-test
+```
+
+5. Resumo dos comandos utilizados
+```bash
+npm run test:e2e -- --spec "cypress/e2e/login.cy.js"
+npm run test 
+npm start               
+npm run test:open           
+```
+
+📊 Configuração Allure para Cypress
+1. Instalar dependências:
+```bash
+npm install --save-dev @shelex/cypress-allure-plugin allure-commandline
+```
 
 
 📄 Licença

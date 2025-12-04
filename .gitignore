@@ -24,3 +24,9 @@ Thumbs.db
 # Cache e temp
 /.cache
 /.temp
+
+# Relatórios de teste
+cypress/reports/
+allure-results/
+allure-report/
+coverage/

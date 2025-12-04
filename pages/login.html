@@ -22,7 +22,6 @@
             max-width: 100vw;
         }
 
-        /* Painel esquerdo - Branding (ocupa o espaço disponível) */
         .login-brand {
             flex: 1;
             min-width: 350px;
@@ -52,7 +51,6 @@
             opacity: 0.95;
         }
 
-        /* Painel direito - Formulário com largura fixa e scroll */
         .login-form-container {
             width: 500px;
             min-width: 500px;
@@ -60,7 +58,7 @@
             display: flex;
             flex-direction: column;
             box-shadow: -10px 0 30px rgba(0,0,0,0.15);
-            overflow-y: auto;
+            overflow: visible;
             padding: 40px 0;
         }
 
@@ -202,9 +200,9 @@
         .divider span {
             background: white;
             padding: 0 20px;
+            position: relative;
         }
 
-        /* Contas de teste */
         .test-accounts {
             margin-top: 30px;
             padding: 24px;
@@ -251,9 +249,46 @@
             font-size: 0.95rem;
             background: #3498db;
             color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
         }
 
-        /* Responsivo - Mobile First */
+        .btn-sm:hover {
+            background: #2980b9;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: block;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .alert.show {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .loading-spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,256,256,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+            display: none;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
         @media (max-width: 992px) {
             .login-wrapper {
                 flex-direction: column;
@@ -275,26 +310,31 @@
             .login-card {
                 padding: 0 20px;
             }
+            .form-options {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
         }
     </style>
 </head>
 <body>
 
     <div class="login-wrapper" data-testid="login-page">
-        <!-- Painel Esquerdo: Branding -->
         <div class="login-brand">
             <i class="fas fa-graduation-cap"></i>
             <h1>Portal Escolar</h1>
             <p>Sistema de Gestão Acadêmica</p>
         </div>
 
-        <!-- Painel Direito: Formulário -->
         <div class="login-form-container">
             <div class="login-card">
                 <div class="login-card-header">
                     <h2>Login</h2>
                     <p>Entre com suas credenciais</p>
                 </div>
+
+                <div id="login-message" class="alert" role="alert"></div>
 
                 <form id="login-form" data-testid="login-form">
                     <div class="form-group">
@@ -319,37 +359,37 @@
                         <a href="#" data-testid="forgot-password-link">Esqueci a senha</a>
                     </div>
 
-                    <button type="submit" class="btn btn-primary" data-testid="login-submit-btn">
-                        Entrar
+                    <button type="submit" class="btn btn-primary" id="login-submit-btn" data-testid="login-submit-btn">
+                        <span class="loading-spinner" id="login-spinner"></span>
+                        <span id="login-btn-text">Entrar</span>
                     </button>
 
                     <div class="divider"><span>ou</span></div>
 
                     <button type="button" class="btn btn-secondary" id="go-to-register-btn" data-testid="go-to-register-btn">
-                        Criar nova conta
+                        <i class="fas fa-user-plus"></i> Criar nova conta
                     </button>
 
-                    <!-- Contas de teste -->
                     <div class="test-accounts" data-testid="test-accounts-section">
-                        <h4>Contas para Teste QA</h4>
+                        <h4>Contas para Teste</h4>
                         <div class="test-account-grid">
                             <div class="test-account-card" data-testid="test-admin-account">
-                                <div class="test-account-role admin">Admin</div>
+                                <div class="test-account-role admin">Administrador</div>
                                 <div>admin@escola.com</div>
                                 <div>admin123</div>
-                                <button class="btn btn-sm" data-testid="fill-admin-btn">Preencher</button>
+                                <button type="button" class="btn btn-sm" data-testid="fill-admin-btn">Login Rápido</button>
                             </div>
                             <div class="test-account-card" data-testid="test-teacher-account">
                                 <div class="test-account-role teacher">Professor</div>
                                 <div>professor@escola.com</div>
                                 <div>professor123</div>
-                                <button class="btn btn-sm" data-testid="fill-teacher-btn">Preencher</button>
+                                <button type="button" class="btn btn-sm" data-testid="fill-teacher-btn">Login Rápido</button>
                             </div>
                             <div class="test-account-card" data-testid="test-student-account">
                                 <div class="test-account-role student">Aluno</div>
                                 <div>aluno@escola.com</div>
                                 <div>aluno123</div>
-                                <button class="btn btn-sm" data-testid="fill-student-btn">Preencher</button>
+                                <button type="button" class="btn btn-sm" data-testid="fill-student-btn">Login Rápido</button>
                             </div>
                         </div>
                     </div>
@@ -358,52 +398,190 @@
         </div>
     </div>
 
+    <!-- Scripts JS -->
+    <script src="../js/utils.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/alunos.js"></script>
+    <script src="../js/professores.js"></script>
+    <script src="../js/cursos.js"></script>
+    
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const emailInput = document.getElementById('login-email');
             const passwordInput = document.getElementById('login-password');
             const toggleBtn = document.getElementById('toggle-password-btn');
+            const loginForm = document.getElementById('login-form');
+            const loginSubmitBtn = document.getElementById('login-submit-btn');
+            const loginSpinner = document.getElementById('login-spinner');
+            const loginBtnText = document.getElementById('login-btn-text');
+            const loginMessage = document.getElementById('login-message');
+            const rememberMeCheckbox = document.getElementById('remember-me');
 
+            function showMessage(message, type = 'error') {
+                console.log('[v0] showMessage called:', message, type);
+                loginMessage.textContent = message;
+                loginMessage.className = `alert alert-${type}`;
+                loginMessage.style.display = 'block';
+                loginMessage.style.visibility = 'visible';
+                loginMessage.style.opacity = '1';
+                loginMessage.classList.add('show');
+                
+                if (type === 'success' || type === 'info') {
+                    setTimeout(() => {
+                        hideMessage();
+                    }, 3000);
+                }
+            }
+
+            function hideMessage() {
+                loginMessage.style.display = 'none';
+                loginMessage.style.visibility = 'hidden';
+                loginMessage.style.opacity = '0';
+                loginMessage.classList.remove('show');
+            }
+
+            // Toggle visibilidade da senha
             toggleBtn.addEventListener('click', () => {
                 const type = passwordInput.type === 'password' ? 'text' : 'password';
                 passwordInput.type = type;
                 toggleBtn.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
             });
 
+            async function processarLogin(email, password) {
+                loginSpinner.style.display = 'inline-block';
+                loginBtnText.textContent = 'Autenticando...';
+                loginSubmitBtn.disabled = true;
+                
+                try {
+                    let success = false;
+                    
+                    // Check if external auth.js function exists
+                    if (typeof login === 'function') {
+                        success = login(email, password);
+                    } else {
+                        const validCredentials = [
+                            { email: 'admin@escola.com', password: 'admin123', nome: 'admin' },
+                            { email: 'professor@escola.com', password: 'professor123', nome: 'professor' },
+                            { email: 'aluno@escola.com', password: 'aluno123', nome: 'aluno' }
+                        ];
+                        
+                        const matchedUser = validCredentials.find(cred => 
+                            cred.email === email && cred.password === password
+                        );
+                        
+                        if (matchedUser) {
+                            success = true;
+                            const user = { email: matchedUser.email, nome: matchedUser.nome };
+                            localStorage.setItem('currentUser', JSON.stringify(user));
+                            localStorage.setItem('isAuthenticated', 'true');
+                        }
+                    }
+                    
+                    if (success) {
+                        showMessage('Login bem-sucedido! Redirecionando...', 'success');
+                        
+                        if (rememberMeCheckbox.checked) {
+                            localStorage.setItem('rememberedEmail', email);
+                            localStorage.setItem('rememberMe', 'true');
+                        } else {
+                            localStorage.removeItem('rememberedEmail');
+                            localStorage.removeItem('rememberMe');
+                        }
+                        
+                        setTimeout(() => {
+                            window.location.href = 'dashboard.html';
+                        }, 1500);
+                    } else {
+                        showMessage('Email ou senha incorretos', 'error');
+                    }
+                } catch (error) {
+                    showMessage('Erro na conexão. Tente novamente.', 'error');
+                    console.error('Erro no login:', error);
+                } finally {
+                    loginSpinner.style.display = 'none';
+                    loginBtnText.textContent = 'Entrar';
+                    loginSubmitBtn.disabled = false;
+                }
+            }
+
             document.querySelectorAll('[data-testid^="fill-"]').forEach(btn => {
-                btn.addEventListener('click', () => {
+                btn.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    
                     const map = {
                         'fill-admin-btn': ['admin@escola.com', 'admin123'],
                         'fill-teacher-btn': ['professor@escola.com', 'professor123'],
                         'fill-student-btn': ['aluno@escola.com', 'aluno123']
                     };
                     const [email, pass] = map[btn.dataset.testid];
+                    
                     emailInput.value = email;
                     passwordInput.value = pass;
+                    
+                    showMessage(`Campos preenchidos com ${email.split('@')[0]}`, 'info');
+                    
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                    
+                    await processarLogin(email, pass);
                 });
             });
 
-            document.getElementById('login-form').addEventListener('submit', e => {
+            loginForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
+                
                 const email = emailInput.value.trim();
-                const pass = passwordInput.value;
-                const validUsers = {
-                    'admin@escola.com': 'admin123',
-                    'professor@escola.com': 'professor123',
-                    'aluno@escola.com': 'aluno123'
-                };
-                if (validUsers[email] === pass) {
-                    alert('Login realizado com sucesso!');
-                    window.location.href = 'dashboard.html';
+                const password = passwordInput.value;
+                
+                await processarLogin(email, password);
+            });
+
+            const savedEmail = localStorage.getItem('rememberedEmail');
+            const rememberMe = localStorage.getItem('rememberMe') === 'true';
+            
+            if (savedEmail && rememberMe) {
+                emailInput.value = savedEmail;
+                rememberMeCheckbox.checked = true;
+            }
+
+            rememberMeCheckbox.addEventListener('change', () => {
+                if (rememberMeCheckbox.checked && emailInput.value) {
+                    localStorage.setItem('rememberedEmail', emailInput.value);
+                    localStorage.setItem('rememberMe', 'true');
                 } else {
-                    alert('Email ou senha incorretos');
+                    localStorage.removeItem('rememberedEmail');
+                    localStorage.removeItem('rememberMe');
+                }
+            });
+
+            emailInput.addEventListener('input', () => {
+                if (rememberMeCheckbox.checked && emailInput.value) {
+                    localStorage.setItem('rememberedEmail', emailInput.value);
                 }
             });
 
             document.getElementById('go-to-register-btn').addEventListener('click', () => {
-                window.location.href = '../pages/register.html';
+                window.location.href = 'register.html';
             });
 
+            document.querySelector('[data-testid="forgot-password-link"]').addEventListener('click', (e) => {
+                e.preventDefault();
+                showMessage('Funcionalidade em desenvolvimento!', 'info');
+            });
+
+            function checkIfLoggedIn() {
+                const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
+                const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                
+                if (isAuthenticated && currentUser.email) {
+                    showMessage('Você já está logado', 'info');
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 2500);
+                }
+            }
+
+            checkIfLoggedIn();
+            emailInput.focus();
         });
     </script>
 </body>

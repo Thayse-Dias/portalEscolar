@@ -298,13 +298,16 @@
         
         // Inicializar página
         document.addEventListener('DOMContentLoaded', () => {
+            console.log('[v0] Inicializando página de alunos');
             loadAlunosTable();
             setupEventListeners();
             setupSorting();
         });
         
         function loadAlunosTable() {
+            console.log('[v0] Carregando tabela de alunos');
             const alunos = getAlunos();
+            console.log('[v0] Total de alunos:', alunos.length);
             let filteredAlunos = filterAlunos(alunos);
             
             // Ordenar
@@ -676,6 +679,10 @@
             // Resetar formulário
             document.getElementById('aluno-form-modal').reset();
             
+            // Limpar erros de validação
+            document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+            document.querySelectorAll('.form-control').forEach(el => el.classList.remove('error'));
+            
             if (alunoId) {
                 // Modo edição
                 modalTitle.textContent = 'Editar Aluno';
@@ -685,6 +692,7 @@
                     alunoIdInput.value = aluno.id;
                     document.getElementById('modal-nome').value = aluno.nome;
                     document.getElementById('modal-email').value = aluno.email;
+                    document.getElementById('modal-cpf').value = aluno.cpf; // Adicionado campo CPF
                     document.getElementById('modal-data-nascimento').value = aluno.dataNascimento;
                     document.getElementById('modal-curso').value = aluno.curso;
                     document.getElementById('modal-matricula').value = aluno.matricula || '';
@@ -706,10 +714,13 @@
         }
         
         function saveAluno() {
+            console.log('[v0] Salvando aluno');
             const alunoId = document.getElementById('aluno-id').value;
+            
             const alunoData = {
                 nome: document.getElementById('modal-nome').value.trim(),
                 email: document.getElementById('modal-email').value.trim(),
+                cpf: document.getElementById('modal-cpf').value.trim(),
                 dataNascimento: document.getElementById('modal-data-nascimento').value,
                 curso: document.getElementById('modal-curso').value,
                 matricula: document.getElementById('modal-matricula').value.trim(),
@@ -718,8 +729,11 @@
                 endereco: document.getElementById('modal-endereco').value.trim()
             };
             
+            console.log('[v0] Dados do aluno:', alunoData);
+            
             // Validação
             if (!validateAlunoForm(alunoData)) {
+                console.error('[v0] Validação falhou');
                 return;
             }
             
@@ -730,7 +744,8 @@
             } else {
                 // Adicionar novo aluno
                 alunoData.dataCadastro = new Date().toISOString();
-                adicionarAluno(alunoData);
+                const newId = adicionarAluno(alunoData);
+                console.log('[v0] Novo aluno adicionado com ID:', newId);
                 showNotification('Aluno adicionado com sucesso!', 'success');
             }
             
@@ -758,6 +773,17 @@
                 clearFieldError('modal-email');
             }
             
+            // Validar CPF
+            if (!data.cpf) {
+                showFieldError('modal-cpf', 'CPF é obrigatório');
+                isValid = false;
+            } else if (!validateCPF(data.cpf)) {
+                showFieldError('modal-cpf', 'CPF inválido');
+                isValid = false;
+            } else {
+                clearFieldError('modal-cpf');
+            }
+            
             // Validar data de nascimento
             if (!data.dataNascimento) {
                 showFieldError('modal-data-nascimento', 'Data de nascimento é obrigatória');
@@ -774,6 +800,7 @@
                 clearFieldError('modal-curso');
             }
             
+            console.log('[v0] Validação resultado:', isValid);
             return isValid;
         }
         
@@ -802,6 +829,7 @@
             if (aluno) {
                 alert(`Detalhes do Aluno:\n\n` +
                       `Nome: ${aluno.nome}\n` +
+                      `CPF: ${aluno.cpf}\n` + // Exibe CPF
                       `Email: ${aluno.email}\n` +
                       `Data de Nascimento: ${formatDate(aluno.dataNascimento)}\n` +
                       `Curso: ${getCursoNome(aluno.curso)}\n` +
@@ -894,10 +922,10 @@
             const alunos = getAlunos();
             
             // Criar CSV
-            let csv = 'Nome,Matrícula,Email,Curso,Status,Data de Cadastro\n';
+            let csv = 'Nome,CPF,Email,Curso,Status,Data de Cadastro\n'; // Adicionado CPF
             
             alunos.forEach(aluno => {
-                csv += `"${aluno.nome}","${aluno.matricula || ''}","${aluno.email}","${getCursoNome(aluno.curso)}","${getStatusText(aluno.status || 'ativo')}","${formatDate(aluno.dataCadastro)}"\n`;
+                csv += `"${aluno.nome}","${aluno.cpf}","${aluno.email}","${getCursoNome(aluno.curso)}","${getStatusText(aluno.status || 'ativo')}","${formatDate(aluno.dataCadastro)}"\n`;
             });
             
             // Criar blob e download
@@ -953,6 +981,55 @@
         function validateEmail(email) {
             const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             return regex.test(email);
+        }
+        
+        // Nova função para validação de CPF
+        function validateCPF(cpf) {
+            cpf = cpf.replace(/[^\d]+/g, ''); // Remove caracteres não numéricos
+        
+            if (cpf.length !== 11 || 
+                cpf === "00000000000" || 
+                cpf === "11111111111" || 
+                cpf === "22222222222" || 
+                cpf === "33333333333" || 
+                cpf === "44444444444" || 
+                cpf === "55555555555" || 
+                cpf === "66666666666" || 
+                cpf === "77777777777" || 
+                cpf === "88888888888" || 
+                cpf === "99999999999") {
+                return false;
+            }
+        
+            let sum = 0;
+            let remainder;
+        
+            for (let i = 1; i <= 9; i++) {
+                sum = sum + parseInt(cpf.substring(i - 1, i)) * (11 - i);
+            }
+            remainder = (sum * 10) % 11;
+        
+            if (remainder === 10 || remainder === 11) {
+                remainder = 0;
+            }
+            if (remainder !== parseInt(cpf.substring(9, 10))) {
+                return false;
+            }
+        
+            sum = 0;
+            for (let i = 1; i <= 10; i++) {
+                sum = sum + parseInt(cpf.substring(i - 1, i)) * (12 - i);
+            }
+            remainder = (sum * 10) % 11;
+        
+            if (remainder === 10 || remainder === 11) {
+                remainder = 0;
+            }
+            if (remainder !== parseInt(cpf.substring(10, 11))) {
+                return false;
+            }
+        
+            return true;
         }
         
         function debounce(func, wait) {

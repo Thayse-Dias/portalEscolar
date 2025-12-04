@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Escolar - Professores</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+    <div class="dashboard-container" data-testid="professores-page">
+        <!-- Sidebar -->
+        <aside class="sidebar" data-testid="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-graduation-cap"></i>
+                    <h2>Portal Escolar</h2>
+                </div>
+                <button class="toggle-sidebar" data-testid="toggle-sidebar-btn">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="dashboard.html" data-testid="nav-dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                    <li><a href="alunos.html" data-testid="nav-alunos"><i class="fas fa-user-graduate"></i> Alunos</a></li>
+                    <li><a href="professores.html" class="active" data-testid="nav-professores"><i class="fas fa-chalkboard-teacher"></i> Professores</a></li>
+                    <li><a href="cursos.html" data-testid="nav-cursos"><i class="fas fa-graduation-cap"></i> Cursos</a></li>
+                    <li><a href="#" data-testid="nav-notas"><i class="fas fa-chart-line"></i> Notas</a></li>
+                </ul>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button class="btn btn-logout" data-testid="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i> Sair
+                </button>
+            </div>
+        </aside>
+        
+        <!-- Conteúdo principal -->
+        <main class="main-content">
+            <header class="main-header">
+                <div class="header-left">
+                    <h1 data-testid="page-title">Professores</h1>
+                    <nav class="breadcrumb">
+                        <a href="dashboard.html">Dashboard</a> / <span>Professores</span>
+                    </nav>
+                </div>
+            </header>
+            
+            <div class="content-wrapper">
+                <!-- Barra de ferramentas -->
+                <div class="toolbar" data-testid="professores-toolbar">
+                    <div class="toolbar-left">
+                        <div class="search-box">
+                            <input 
+                                type="text" 
+                                id="search-professores" 
+                                placeholder="Buscar professores..."
+                                data-testid="search-professores-input"
+                            >
+                            <button class="search-btn" data-testid="search-professores-btn">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                        
+                        <select class="filter-select" id="filter-formacao" data-testid="filter-formacao-select">
+                            <option value="">Todas as formações</option>
+                            <option value="graduacao">Graduação</option>
+                            <option value="especializacao">Especialização</option>
+                            <option value="mestrado">Mestrado</option>
+                            <option value="doutorado">Doutorado</option>
+                        </select>
+                        
+                        <select class="filter-select" id="filter-status" data-testid="filter-status-select">
+                            <option value="">Todos os status</option>
+                            <option value="ativo">Ativo</option>
+                            <option value="inativo">Inativo</option>
+                            <option value="afastado">Afastado</option>
+                        </select>
+                    </div>
+                    
+                    <div class="toolbar-right">
+                        <button class="btn btn-primary" id="add-professor-btn" data-testid="add-professor-btn">
+                            <i class="fas fa-user-plus"></i> Adicionar Professor
+                        </button>
+                        <button class="btn btn-secondary" id="export-professores-btn" data-testid="export-professores-btn">
+                            <i class="fas fa-download"></i> Exportar
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Tabela de professores -->
+                <div class="data-table-container" data-testid="professores-table-container">
+                    <div class="table-responsive">
+                        <table class="data-table" id="professores-table" data-testid="professores-table">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <input type="checkbox" id="select-all" data-testid="select-all-checkbox">
+                                    </th>
+                                    <th data-sort="nome">Nome</th>
+                                    <th data-sort="registro">Registro</th>
+                                    <th data-sort="especialidade">Especialidade</th>
+                                    <th data-sort="formacao">Formação</th>
+                                    <th data-sort="email">Email</th>
+                                    <th data-sort="status">Status</th>
+                                    <th data-sort="dataAdmissao">Data de Admissão</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="professores-table-body" data-testid="professores-table-body">
+                                <!-- Dados serão carregados via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Paginação -->
+                    <div class="pagination" data-testid="professores-pagination">
+                        <div class="pagination-info" data-testid="pagination-info">
+                            Mostrando <span id="start-index">0</span>-<span id="end-index">0</span> de <span id="total-professores">0</span> professores
+                        </div>
+                        <div class="pagination-controls">
+                            <button class="pagination-btn" id="first-page" data-testid="first-page-btn" disabled>
+                                <i class="fas fa-angle-double-left"></i>
+                            </button>
+                            <button class="pagination-btn" id="prev-page" data-testid="prev-page-btn" disabled>
+                                <i class="fas fa-angle-left"></i>
+                            </button>
+                            <div class="page-numbers" data-testid="page-numbers"></div>
+                            <button class="pagination-btn" id="next-page" data-testid="next-page-btn" disabled>
+                                <i class="fas fa-angle-right"></i>
+                            </button>
+                            <button class="pagination-btn" id="last-page" data-testid="last-page-btn" disabled>
+                                <i class="fas fa-angle-double-right"></i>
+                            </button>
+                        </div>
+                        <div class="pagination-size">
+                            <select id="page-size" data-testid="page-size-select">
+                                <option value="10">10 por página</option>
+                                <option value="25">25 por página</option>
+                                <option value="50">50 por página</option>
+                                <option value="100">100 por página</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Controles em massa -->
+                <div class="bulk-actions" data-testid="bulk-actions" style="display: none;">
+                    <div class="bulk-info" data-testid="bulk-selected-info">
+                        <span id="selected-count">0</span> professor(es) selecionado(s)
+                    </div>
+                    <div class="bulk-buttons">
+                        <button class="btn btn-sm btn-secondary" id="bulk-edit" data-testid="bulk-edit-btn">
+                            <i class="fas fa-edit"></i> Editar
+                        </button>
+                        <button class="btn btn-sm btn-danger" id="bulk-delete" data-testid="bulk-delete-btn">
+                            <i class="fas fa-trash"></i> Excluir
+                        </button>
+                        <button class="btn btn-sm btn-outline" id="clear-selection" data-testid="clear-selection-btn">
+                            <i class="fas fa-times"></i> Limpar seleção
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Modal para adicionar/editar professor -->
+    <div class="modal" id="professor-modal" data-testid="professor-modal">
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h3 id="modal-title">Adicionar Professor</h3>
+                <button class="close-modal" data-testid="close-professor-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="professor-form-modal" data-testid="professor-form-modal">
+                    <input type="hidden" id="professor-id">
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="modal-nome" class="form-label required">Nome Completo</label>
+                            <input type="text" id="modal-nome" class="form-control" required data-testid="modal-nome-input">
+                            <div class="error-message" data-testid="modal-nome-error"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="modal-email" class="form-label required">Email</label>
+                            <input type="email" id="modal-email" class="form-control" required data-testid="modal-email-input">
+                            <div class="error-message" data-testid="modal-email-error"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="modal-registro" class="form-label required">Registro</label>
+                            <input type="text" id="modal-registro" class="form-control" required data-testid="modal-registro-input">
+                            <div class="error-message" data-testid="modal-registro-error"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="modal-telefone" class="form-label">Telefone</label>
+                            <input type="text" id="modal-telefone" class="form-control" data-testid="modal-telefone-input">
+                            <div class="error-message" data-testid="modal-telefone-error"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="modal-especialidade" class="form-label required">Especialidade</label>
+                            <input type="text" id="modal-especialidade" class="form-control" required data-testid="modal-especialidade-input">
+                            <div class="error-message" data-testid="modal-especialidade-error"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="modal-formacao" class="form-label required">Formação</label>
+                            <select id="modal-formacao" class="form-control" required data-testid="modal-formacao-select">
+                                <option value="">Selecione a formação</option>
+                                <option value="graduacao">Graduação</option>
+                                <option value="especializacao">Especialização</option>
+                                <option value="mestrado">Mestrado</option>
+                                <option value="doutorado">Doutorado</option>
+                            </select>
+                            <div class="error-message" data-testid="modal-formacao-error"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="modal-data-admissao" class="form-label required">Data de Admissão</label>
+                            <input type="date" id="modal-data-admissao" class="form-control" required data-testid="modal-data-admissao-input">
+                            <div class="error-message" data-testid="modal-data-admissao-error"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="modal-status" class="form-label">Status</label>
+                            <select id="modal-status" class="form-control" data-testid="modal-status-select">
+                                <option value="ativo">Ativo</option>
+                                <option value="inativo">Inativo</option>
+                                <option value="afastado">Afastado</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-testid="cancel-professor-btn">Cancelar</button>
+                <button class="btn btn-primary" id="save-professor-btn" data-testid="save-professor-btn">Salvar</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de confirmação de exclusão -->
+    <div class="modal" id="confirm-delete-modal" data-testid="confirm-delete-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-exclamation-triangle warning"></i> Confirmar Exclusão</h3>
+                <button class="close-modal" data-testid="close-delete-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="delete-message">Tem certeza que deseja excluir este professor?</p>
+                <div class="alert alert-warning" data-testid="delete-warning">
+                    <i class="fas fa-exclamation-circle"></i>
+                    Esta ação não pode ser desfeita.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-testid="cancel-delete-btn">Cancelar</button>
+                <button class="btn btn-danger" id="confirm-delete-btn" data-testid="confirm-delete-btn">Excluir</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="../js/utils.js"></script>
+    <script src="../js/auth.js"></script>
+    <script>
+        const PROFESSORES_KEY = 'portal-escolar-professores';
+        
+        function initProfessoresData() {
+            if (!localStorage.getItem(PROFESSORES_KEY)) {
+                const defaultProfessores = [
+                    {
+                        id: 1,
+                        nome: 'Carlos Mendes',
+                        email: 'carlos.mendes@escola.com',
+                        especialidade: 'Programação e Algoritmos',
+                        formacao: 'doutorado',
+                        registro: 'PROF001',
+                        telefone: '(11) 95555-5555',
+                        status: 'ativo',
+                        dataAdmissao: '2020-01-15',
+                        dataCadastro: new Date().toISOString()
+                    },
+                    {
+                        id: 2,
+                        nome: 'Fernanda Lima',
+                        email: 'fernanda.lima@escola.com',
+                        especialidade: 'Banco de Dados',
+                        formacao: 'mestrado',
+                        registro: 'PROF002',
+                        telefone: '(11) 94444-4444',
+                        status: 'ativo',
+                        dataAdmissao: '2021-03-10',
+                        dataCadastro: new Date().toISOString()
+                    },
+                    {
+                        id: 3,
+                        nome: 'Roberto Alves',
+                        email: 'roberto.alves@escola.com',
+                        especialidade: 'Engenharia de Software',
+                        formacao: 'doutorado',
+                        registro: 'PROF003',
+                        telefone: '(11) 93333-3333',
+                        status: 'ativo',
+                        dataAdmissao: '2019-08-22',
+                        dataCadastro: new Date().toISOString()
+                    },
+                    {
+                        id: 4,
+                        nome: 'Patricia Santos',
+                        email: 'patricia.santos@escola.com',
+                        especialidade: 'Redes de Computadores',
+                        formacao: 'especializacao',
+                        registro: 'PROF004',
+                        telefone: '(11) 92222-2222',
+                        status: 'afastado',
+                        dataAdmissao: '2022-02-28',
+                        dataCadastro: new Date().toISOString()
+                    },
+                    {
+                        id: 5,
+                        nome: 'Thayse Fonseca',
+                        email: 'thayse.fonseca@escola.com',
+                        especialidade: 'Quality Assurance',
+                        formacao: 'especializacao',
+                        registro: 'PROF005',
+                        telefone: '(11) 92222-0001',
+                        status: 'afastado',
+                        dataAdmissao: '2025-02-28',
+                        dataCadastro: new Date().toISOString()
+                    }
+                ];
+                
+                localStorage.setItem(PROFESSORES_KEY, JSON.stringify(defaultProfessores));
+            }
+        }
+        
+        function getProfessores() {
+            const professores = localStorage.getItem(PROFESSORES_KEY);
+            return professores ? JSON.parse(professores) : [];
+        }
+        
+        function getProfessorById(id) {
+            const professores = getProfessores();
+            return professores.find(professor => professor.id === id);
+        }
+        
+        function adicionarProfessor(professorData) {
+            const professores = getProfessores();
+            const newId = professores.length > 0 ? Math.max(...professores.map(p => p.id)) + 1 : 1;
+            
+            const novoProfessor = {
+                id: newId,
+                ...professorData,
+                dataCadastro: new Date().toISOString()
+            };
+            
+            professores.push(novoProfessor);
+            localStorage.setItem(PROFESSORES_KEY, JSON.stringify(professores));
+            
+            return newId;
+        }
+        
+        function updateProfessor(id, professorData) {
+            const professores = getProfessores();
+            const index = professores.findIndex(professor => professor.id === id);
+            
+            if (index !== -1) {
+                professores[index] = { ...professores[index], ...professorData };
+                localStorage.setItem(PROFESSORES_KEY, JSON.stringify(professores));
+                return true;
+            }
+            
+            return false;
+        }
+        
+        function deletarProfessor(id) {
+            const professores = getProfessores();
+            const filteredProfessores = professores.filter(professor => professor.id !== id);
+            localStorage.setItem(PROFESSORES_KEY, JSON.stringify(filteredProfessores));
+            return true;
+        }
+        
+        function searchProfessores(query) {
+            const professores = getProfessores();
+            const searchTerm = query.toLowerCase().trim();
+            
+            if (!searchTerm) {
+                return professores;
+            }
+            
+            return professores.filter(professor => {
+                return (
+                    professor.nome.toLowerCase().includes(searchTerm) ||
+                    professor.email.toLowerCase().includes(searchTerm) ||
+                    professor.especialidade.toLowerCase().includes(searchTerm) ||
+                    professor.registro?.toLowerCase().includes(searchTerm)
+                );
+            });
+        }
+        
+        function filterProfessoresByFormacao(formacao) {
+            const professores = getProfessores();
+            
+            if (!formacao) {
+                return professores;
+            }
+            
+            return professores.filter(professor => professor.formacao === formacao);
+        }
+        
+        function filterProfessoresByStatus(status) {
+            const professores = getProfessores();
+            
+            if (!status) {
+                return professores;
+            }
+            
+            return professores.filter(professor => professor.status === status);
+        }
+        
+        function getFormacaoText(formacao) {
+            const formacoes = {
+                'graduacao': 'Graduação',
+                'especializacao': 'Especialização',
+                'mestrado': 'Mestrado',
+                'doutorado': 'Doutorado'
+            };
+            
+            return formacoes[formacao] || formacao;
+        }
+        
+        function getProfessorStatusText(status) {
+            const statusMap = {
+                'ativo': 'Ativo',
+                'inativo': 'Inativo',
+                'afastado': 'Afastado'
+            };
+            
+            return statusMap[status] || status;
+        }
+        
+        let currentPage = 1;
+        let pageSize = 10;
+        let totalPages = 1;
+        let currentFilter = {};
+        let selectedProfessores = new Set();
+        let professorToDelete = null;
+        
+        // Verificar autenticação
+        if (typeof isAuthenticated === 'function' && !isAuthenticated()) {
+            window.location.href = '../index.html';
+        }
+        
+        // Inicializar página
+        document.addEventListener('DOMContentLoaded', () => {
+            initProfessoresData();
+            loadProfessoresTable();
+            setupEventListeners();
+            setupSorting();
+        });
+        
+        function loadProfessoresTable() {
+            const professores = getProfessores();
+            let filteredProfessores = filterProfessores(professores);
+            
+            const sortBy = localStorage.getItem('professoresSortBy') || 'nome';
+            const sortOrder = localStorage.getItem('professoresSortOrder') || 'asc';
+            filteredProfessores = sortProfessores(filteredProfessores, sortBy, sortOrder);
+            
+            totalPages = Math.ceil(filteredProfessores.length / pageSize);
+            const startIndex = (currentPage - 1) * pageSize;
+            const endIndex = Math.min(startIndex + pageSize, filteredProfessores.length);
+            const pageProfessores = filteredProfessores.slice(startIndex, endIndex);
+            
+            updateTable(pageProfessores);
+            updatePaginationInfo(filteredProfessores.length, startIndex, endIndex);
+            updatePaginationControls();
+        }
+        
+        function filterProfessores(professores) {
+            const searchTerm = document.getElementById('search-professores')?.value.toLowerCase() || '';
+            const formacaoFilter = document.getElementById('filter-formacao')?.value || '';
+            const statusFilter = document.getElementById('filter-status')?.value || '';
+            
+            return professores.filter(professor => {
+                if (searchTerm && 
+                    !professor.nome.toLowerCase().includes(searchTerm) &&
+                    !professor.email.toLowerCase().includes(searchTerm) &&
+                    !professor.registro?.toLowerCase().includes(searchTerm) &&
+                    !professor.especialidade?.toLowerCase().includes(searchTerm)) {
+                    return false;
+                }
+                
+                if (formacaoFilter && professor.formacao !== formacaoFilter) {
+                    return false;
+                }
+                
+                if (statusFilter && professor.status !== statusFilter) {
+                    return false;
+                }
+                
+                return true;
+            });
+        }
+        
+        function sortProfessores(professores, sortBy, sortOrder) {
+            return [...professores].sort((a, b) => {
+                let valueA = a[sortBy] || '';
+                let valueB = b[sortBy] || '';
+                
+                valueA = String(valueA).toLowerCase();
+                valueB = String(valueB).toLowerCase();
+                
+                if (sortOrder === 'asc') {
+                    return valueA.localeCompare(valueB);
+                } else {
+                    return valueB.localeCompare(valueA);
+                }
+            });
+        }
+        
+        function updateTable(professores) {
+            const tbody = document.getElementById('professores-table-body');
+            
+            if (professores.length === 0) {
+                tbody.innerHTML = `
+                    <tr data-testid="no-professores-row">
+                        <td colspan="9" class="empty-state">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                            <p>Nenhum professor encontrado</p>
+                            <button class="btn btn-primary btn-sm" id="add-first-professor" data-testid="add-first-professor-btn">
+                                <i class="fas fa-user-plus"></i> Adicionar primeiro professor
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tbody.innerHTML = professores.map(professor => `
+                <tr data-professor-id="${professor.id}" data-testid="professor-row-${professor.id}">
+                    <td>
+                        <input type="checkbox" class="select-professor" value="${professor.id}" data-testid="select-professor-${professor.id}">
+                    </td>
+                    <td data-testid="professor-nome-${professor.id}">${professor.nome}</td>
+                    <td data-testid="professor-registro-${professor.id}">${professor.registro}</td>
+                    <td data-testid="professor-especialidade-${professor.id}">${professor.especialidade}</td>
+                    <td data-testid="professor-formacao-${professor.id}">
+                        <span class="badge badge-${professor.formacao}">${getFormacaoText(professor.formacao)}</span>
+                    </td>
+                    <td data-testid="professor-email-${professor.id}">${professor.email}</td>
+                    <td data-testid="professor-status-${professor.id}">
+                        <span class="status-badge status-${professor.status}">${getProfessorStatusText(professor.status)}</span>
+                    </td>
+                    <td data-testid="professor-data-admissao-${professor.id}">${formatDate(professor.dataAdmissao)}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-icon btn-edit" data-id="${professor.id}" data-testid="edit-professor-${professor.id}" title="Editar">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn-icon btn-delete" data-id="${professor.id}" data-testid="delete-professor-${professor.id}" title="Excluir">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        function updatePaginationInfo(total, startIndex, endIndex) {
+            document.getElementById('start-index').textContent = total > 0 ? startIndex + 1 : 0;
+            document.getElementById('end-index').textContent = endIndex;
+            document.getElementById('total-professores').textContent = total;
+        }
+        
+        function updatePaginationControls() {
+            document.getElementById('first-page').disabled = currentPage === 1;
+            document.getElementById('prev-page').disabled = currentPage === 1;
+            document.getElementById('next-page').disabled = currentPage === totalPages;
+            document.getElementById('last-page').disabled = currentPage === totalPages;
+            
+            const pageNumbers = document.querySelector('.page-numbers');
+            pageNumbers.innerHTML = '';
+            
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                    const pageBtn = document.createElement('button');
+                    pageBtn.className = `pagination-btn ${i === currentPage ? 'active' : ''}`;
+                    pageBtn.textContent = i;
+                    pageBtn.dataset.testid = `page-${i}-btn`;
+                    pageBtn.addEventListener('click', () => {
+                        currentPage = i;
+                        loadProfessoresTable();
+                    });
+                    pageNumbers.appendChild(pageBtn);
+                } else if (i === currentPage - 2 || i === currentPage + 2) {
+                    const dots = document.createElement('span');
+                    dots.textContent = '...';
+                    dots.className = 'pagination-dots';
+                    pageNumbers.appendChild(dots);
+                }
+            }
+        }
+        
+        function setupEventListeners() {
+            // Busca
+            document.getElementById('search-professores')?.addEventListener('input', () => {
+                currentPage = 1;
+                loadProfessoresTable();
+            });
+            
+            // Filtros
+            document.getElementById('filter-formacao')?.addEventListener('change', () => {
+                currentPage = 1;
+                loadProfessoresTable();
+            });
+            
+            document.getElementById('filter-status')?.addEventListener('change', () => {
+                currentPage = 1;
+                loadProfessoresTable();
+            });
+            
+            // Adicionar professor
+            document.getElementById('add-professor-btn')?.addEventListener('click', openAddModal);
+            
+            // Paginação
+            document.getElementById('first-page')?.addEventListener('click', () => {
+                currentPage = 1;
+                loadProfessoresTable();
+            });
+            
+            document.getElementById('prev-page')?.addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    loadProfessoresTable();
+                }
+            });
+            
+            document.getElementById('next-page')?.addEventListener('click', () => {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    loadProfessoresTable();
+                }
+            });
+            
+            document.getElementById('last-page')?.addEventListener('click', () => {
+                currentPage = totalPages;
+                loadProfessoresTable();
+            });
+            
+            document.getElementById('page-size')?.addEventListener('change', (e) => {
+                pageSize = parseInt(e.target.value);
+                currentPage = 1;
+                loadProfessoresTable();
+            });
+            
+            // Ações da tabela
+            document.getElementById('professores-table-body')?.addEventListener('click', (e) => {
+                const editBtn = e.target.closest('.btn-edit');
+                const deleteBtn = e.target.closest('.btn-delete');
+                
+                if (editBtn) {
+                    const id = parseInt(editBtn.dataset.id);
+                    openEditModal(id);
+                } else if (deleteBtn) {
+                    const id = parseInt(deleteBtn.dataset.id);
+                    openDeleteModal(id);
+                }
+            });
+            
+            // Modal
+            document.querySelector('#professor-modal .close-modal')?.addEventListener('click', closeModal);
+            document.querySelector('[data-testid="cancel-professor-btn"]')?.addEventListener('click', closeModal);
+            document.getElementById('save-professor-btn')?.addEventListener('click', saveProfessor);
+            
+            // Modal de exclusão
+            document.querySelector('#confirm-delete-modal .close-modal')?.addEventListener('click', closeDeleteModal);
+            document.querySelector('[data-testid="cancel-delete-btn"]')?.addEventListener('click', closeDeleteModal);
+            document.getElementById('confirm-delete-btn')?.addEventListener('click', confirmDelete);
+            
+            // Logout
+            document.querySelector('[data-testid="logout-btn"]')?.addEventListener('click', () => {
+                if (typeof logout === 'function') {
+                    logout();
+                }
+            });
+        }
+        
+        function setupSorting() {
+            document.querySelectorAll('[data-sort]').forEach(th => {
+                th.addEventListener('click', () => {
+                    const sortBy = th.dataset.sort;
+                    let sortOrder = localStorage.getItem('professoresSortOrder') || 'asc';
+                    
+                    if (localStorage.getItem('professoresSortBy') === sortBy) {
+                        sortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+                    } else {
+                        sortOrder = 'asc';
+                    }
+                    
+                    localStorage.setItem('professoresSortBy', sortBy);
+                    localStorage.setItem('professoresSortOrder', sortOrder);
+                    
+                    loadProfessoresTable();
+                });
+            });
+        }
+        
+        function openAddModal() {
+            document.getElementById('modal-title').textContent = 'Adicionar Professor';
+            document.getElementById('professor-id').value = '';
+            document.getElementById('professor-form-modal').reset();
+            document.getElementById('professor-modal').style.display = 'flex';
+        }
+        
+        function openEditModal(id) {
+            const professor = getProfessorById(id);
+            if (!professor) return;
+            
+            document.getElementById('modal-title').textContent = 'Editar Professor';
+            document.getElementById('professor-id').value = professor.id;
+            document.getElementById('modal-nome').value = professor.nome;
+            document.getElementById('modal-email').value = professor.email;
+            document.getElementById('modal-registro').value = professor.registro;
+            document.getElementById('modal-telefone').value = professor.telefone || '';
+            document.getElementById('modal-especialidade').value = professor.especialidade;
+            document.getElementById('modal-formacao').value = professor.formacao;
+            document.getElementById('modal-data-admissao').value = professor.dataAdmissao;
+            document.getElementById('modal-status').value = professor.status;
+            
+            document.getElementById('professor-modal').style.display = 'flex';
+        }
+        
+        function closeModal() {
+            document.getElementById('professor-modal').style.display = 'none';
+        }
+        
+        function saveProfessor() {
+            const id = document.getElementById('professor-id').value;
+            const professorData = {
+                nome: document.getElementById('modal-nome').value,
+                email: document.getElementById('modal-email').value,
+                registro: document.getElementById('modal-registro').value,
+                telefone: document.getElementById('modal-telefone').value,
+                especialidade: document.getElementById('modal-especialidade').value,
+                formacao: document.getElementById('modal-formacao').value,
+                dataAdmissao: document.getElementById('modal-data-admissao').value,
+                status: document.getElementById('modal-status').value
+            };
+            
+            if (!professorData.nome || !professorData.email || !professorData.registro || 
+                !professorData.especialidade || !professorData.formacao || !professorData.dataAdmissao) {
+                alert('Por favor, preencha todos os campos obrigatórios');
+                return;
+            }
+            
+            if (id) {
+                updateProfessor(parseInt(id), professorData);
+            } else {
+                adicionarProfessor(professorData);
+            }
+            
+            closeModal();
+            loadProfessoresTable();
+        }
+        
+        function openDeleteModal(id) {
+            professorToDelete = id;
+            const professor = getProfessorById(id);
+            if (professor) {
+                document.getElementById('delete-message').textContent = 
+                    `Tem certeza que deseja excluir o professor ${professor.nome}?`;
+            }
+            document.getElementById('confirm-delete-modal').style.display = 'flex';
+        }
+        
+        function closeDeleteModal() {
+            document.getElementById('confirm-delete-modal').style.display = 'none';
+            professorToDelete = null;
+        }
+        
+        function confirmDelete() {
+            if (professorToDelete) {
+                deletarProfessor(professorToDelete);
+                closeDeleteModal();
+                loadProfessoresTable();
+            }
+        }
+        
+        function formatDate(dateString) {
+            if (!dateString) return '-';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('pt-BR');
+        }
+    </script>
+</body>
+</html>
