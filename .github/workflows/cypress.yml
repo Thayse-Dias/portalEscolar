@@ -6,6 +6,11 @@ on:
   pull_request:
     branches: [ main, master ]
 
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
 jobs:
   cypress:
     runs-on: ubuntu-latest
@@ -13,6 +18,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
 
       - name: Cache node modules & Cypress
         uses: actions/cache@v4
@@ -26,25 +36,22 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run Cypress tests
-        run: npx cypress run
+      - name: Run Cypress tests (with server)
+        run: npm run test
 
-      # Gera o relatório final bonito
       - name: Generate Mochawesome Report
         if: always()
         run: |
           npx mochawesome-merge "cypress/reports/mocha/*.json" > cypress/reports/mochareport.json
           npx marge cypress/reports/mochareport.json --reportDir cypress/reports/html --inline
 
-      # Upload do relatório como artefato (você pode baixar sempre)
-      - name: Upload HTML Report
+      - name: Upload HTML Report as artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: mochawesome-report
+          name: cypress-report
           path: cypress/reports/html
 
-      # Publica como GitHub Pages (acessível por link público!)
       - name: Deploy Report to GitHub Pages
         if: always()
         uses: peaceiris/actions-gh-pages@v4
