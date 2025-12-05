@@ -196,12 +196,6 @@
                     
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="modal-cpf" class="form-label required">CPF</label>
-                            <input type="text" id="modal-cpf" class="form-control" required data-testid="modal-cpf-input">
-                            <div class="error-message" data-testid="modal-cpf-error"></div>
-                        </div>
-                        
-                        <div class="form-group">
                             <label for="modal-data-nascimento" class="form-label required">Data de Nascimento</label>
                             <input type="date" id="modal-data-nascimento" class="form-control" required data-testid="modal-data-nascimento-input">
                             <div class="error-message" data-testid="modal-data-nascimento-error"></div>
@@ -290,12 +284,12 @@
         let totalPages = 1;
         let currentFilter = {};
         let selectedAlunos = new Set();
-        
+
         // Verificar autenticação
         if (!isAuthenticated()) {
             window.location.href = '../index.html';
         }
-        
+
         // Inicializar página
         document.addEventListener('DOMContentLoaded', () => {
             console.log('[v0] Inicializando página de alunos');
@@ -303,37 +297,37 @@
             setupEventListeners();
             setupSorting();
         });
-        
+
         function loadAlunosTable() {
             console.log('[v0] Carregando tabela de alunos');
             const alunos = getAlunos();
             console.log('[v0] Total de alunos:', alunos.length);
             let filteredAlunos = filterAlunos(alunos);
-            
+
             // Ordenar
             const sortBy = localStorage.getItem('alunosSortBy') || 'nome';
             const sortOrder = localStorage.getItem('alunosSortOrder') || 'asc';
             filteredAlunos = sortAlunos(filteredAlunos, sortBy, sortOrder);
-            
+
             // Calcular paginação
             totalPages = Math.ceil(filteredAlunos.length / pageSize);
             const startIndex = (currentPage - 1) * pageSize;
             const endIndex = Math.min(startIndex + pageSize, filteredAlunos.length);
             const pageAlunos = filteredAlunos.slice(startIndex, endIndex);
-            
+
             // Atualizar tabela
             updateTable(pageAlunos);
-            
+
             // Atualizar informações de paginação
             updatePaginationInfo(filteredAlunos.length, startIndex, endIndex);
             updatePaginationControls();
         }
-        
+
         function filterAlunos(alunos) {
             const searchTerm = document.getElementById('search-alunos').value.toLowerCase();
             const cursoFilter = document.getElementById('filter-curso').value;
             const statusFilter = document.getElementById('filter-status').value;
-            
+
             return alunos.filter(aluno => {
                 // Busca
                 if (searchTerm && !aluno.nome.toLowerCase().includes(searchTerm) &&
@@ -341,30 +335,30 @@
                     !aluno.matricula?.toLowerCase().includes(searchTerm)) {
                     return false;
                 }
-                
+
                 // Filtro de curso
                 if (cursoFilter && aluno.curso !== cursoFilter) {
                     return false;
                 }
-                
+
                 // Filtro de status
                 if (statusFilter && aluno.status !== statusFilter) {
                     return false;
                 }
-                
+
                 return true;
             });
         }
-        
+
         function sortAlunos(alunos, sortBy, sortOrder) {
             return [...alunos].sort((a, b) => {
                 let valueA = a[sortBy] || '';
                 let valueB = b[sortBy] || '';
-                
+
                 // Converter para string para comparação
                 valueA = String(valueA).toLowerCase();
                 valueB = String(valueB).toLowerCase();
-                
+
                 if (sortOrder === 'asc') {
                     return valueA.localeCompare(valueB);
                 } else {
@@ -372,10 +366,10 @@
                 }
             });
         }
-        
+
         function updateTable(alunos) {
             const tbody = document.getElementById('alunos-table-body');
-            
+
             if (alunos.length === 0) {
                 tbody.innerHTML = `
                     <tr data-testid="no-alunos-row">
@@ -390,7 +384,7 @@
                 `;
                 return;
             }
-            
+
             tbody.innerHTML = alunos.map(aluno => `
                 <tr data-testid="aluno-row-${aluno.id}">
                     <td>
@@ -441,33 +435,33 @@
                 </tr>
             `).join('');
         }
-        
+
         function updatePaginationInfo(total, start, end) {
             document.getElementById('total-alunos').textContent = total;
             document.getElementById('start-index').textContent = start + 1;
             document.getElementById('end-index').textContent = end;
         }
-        
+
         function updatePaginationControls() {
             const pageNumbers = document.querySelector('[data-testid="page-numbers"]');
             const firstPageBtn = document.getElementById('first-page');
             const prevPageBtn = document.getElementById('prev-page');
             const nextPageBtn = document.getElementById('next-page');
             const lastPageBtn = document.getElementById('last-page');
-            
+
             // Limpar números de página
             pageNumbers.innerHTML = '';
-            
+
             // Gerar números de página
             const maxPagesToShow = 5;
             let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
             let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
-            
+
             // Ajustar se não houver páginas suficientes
             if (endPage - startPage + 1 < maxPagesToShow) {
                 startPage = Math.max(1, endPage - maxPagesToShow + 1);
             }
-            
+
             for (let i = startPage; i <= endPage; i++) {
                 const pageBtn = document.createElement('button');
                 pageBtn.className = `pagination-btn ${i === currentPage ? 'active' : ''}`;
@@ -476,13 +470,13 @@
                 pageBtn.addEventListener('click', () => goToPage(i));
                 pageNumbers.appendChild(pageBtn);
             }
-            
+
             // Atualizar estado dos botões
             firstPageBtn.disabled = currentPage === 1;
             prevPageBtn.disabled = currentPage === 1;
             nextPageBtn.disabled = currentPage === totalPages;
             lastPageBtn.disabled = currentPage === totalPages;
-            
+
             // Atualizar classes CSS para estado disabled
             [firstPageBtn, prevPageBtn, nextPageBtn, lastPageBtn].forEach(btn => {
                 if (btn.disabled) {
@@ -492,117 +486,15 @@
                 }
             });
         }
-        
-        function setupEventListeners() {
-            // Busca
-            const searchInput = document.getElementById('search-alunos');
-            const searchBtn = document.getElementById('search-alunos-btn');
-            
-            searchInput.addEventListener('input', debounce(() => {
-                currentPage = 1;
-                loadAlunosTable();
-            }, 300));
-            
-            searchBtn.addEventListener('click', () => {
-                currentPage = 1;
-                loadAlunosTable();
-            });
-            
-            // Filtros
-            document.getElementById('filter-curso').addEventListener('change', () => {
-                currentPage = 1;
-                loadAlunosTable();
-            });
-            
-            document.getElementById('filter-status').addEventListener('change', () => {
-                currentPage = 1;
-                loadAlunosTable();
-            });
-            
-            // Tamanho da página
-            document.getElementById('page-size').addEventListener('change', (e) => {
-                pageSize = parseInt(e.target.value);
-                currentPage = 1;
-                loadAlunosTable();
-            });
-            
-            // Controles de paginação
-            document.getElementById('first-page').addEventListener('click', () => goToPage(1));
-            document.getElementById('prev-page').addEventListener('click', () => goToPage(currentPage - 1));
-            document.getElementById('next-page').addEventListener('click', () => goToPage(currentPage + 1));
-            document.getElementById('last-page').addEventListener('click', () => goToPage(totalPages));
-            
-            // Adicionar aluno
-            document.getElementById('add-aluno-btn').addEventListener('click', () => openAlunoModal());
-            
-            // Selecionar todos
-            document.getElementById('select-all').addEventListener('change', (e) => {
-                const isChecked = e.target.checked;
-                const checkboxes = document.querySelectorAll('.select-aluno');
-                
-                checkboxes.forEach(checkbox => {
-                    checkbox.checked = isChecked;
-                    const alunoId = parseInt(checkbox.value);
-                    
-                    if (isChecked) {
-                        selectedAlunos.add(alunoId);
-                    } else {
-                        selectedAlunos.delete(alunoId);
-                    }
-                });
-                
-                updateBulkActions();
-            });
-            
-            // Exportar
-            document.getElementById('export-alunos-btn').addEventListener('click', exportAlunos);
-            
-            // Modal de aluno
-            const alunoModal = document.getElementById('aluno-modal');
-            const closeModalBtn = document.querySelector('[data-testid="close-aluno-modal"]');
-            const cancelBtn = document.querySelector('[data-testid="cancel-aluno-btn"]');
-            const saveBtn = document.getElementById('save-aluno-btn');
-            
-            [closeModalBtn, cancelBtn].forEach(btn => {
-                btn.addEventListener('click', () => alunoModal.style.display = 'none');
-            });
-            
-            saveBtn.addEventListener('click', saveAluno);
-            
-            // Modal de confirmação de exclusão
-            const deleteModal = document.getElementById('confirm-delete-modal');
-            const closeDeleteModal = document.querySelector('[data-testid="close-delete-modal"]');
-            const cancelDeleteBtn = document.querySelector('[data-testid="cancel-delete-btn"]');
-            
-            [closeDeleteModal, cancelDeleteBtn].forEach(btn => {
-                btn.addEventListener('click', () => deleteModal.style.display = 'none');
-            });
-            
-            // Fechar modais ao clicar fora
-            [alunoModal, deleteModal].forEach(modal => {
-                modal.addEventListener('click', (e) => {
-                    if (e.target === modal) {
-                        modal.style.display = 'none';
-                    }
-                });
-            });
-            
-            // Adicionar primeiro aluno (quando não há alunos)
-            document.addEventListener('click', (e) => {
-                if (e.target.id === 'add-first-aluno') {
-                    openAlunoModal();
-                }
-            });
-        }
-        
+
         function setupSorting() {
             const headers = document.querySelectorAll('[data-sort]');
-            
+
             headers.forEach(header => {
                 header.addEventListener('click', () => {
                     const sortBy = header.getAttribute('data-sort');
                     let sortOrder = 'asc';
-                    
+
                     // Verificar ordem atual
                     if (header.classList.contains('sort-asc')) {
                         sortOrder = 'desc';
@@ -619,34 +511,34 @@
                         });
                         header.classList.add('sort-asc');
                     }
-                    
+
                     // Salvar preferências
                     localStorage.setItem('alunosSortBy', sortBy);
                     localStorage.setItem('alunosSortOrder', sortOrder);
-                    
+
                     // Recarregar tabela
                     loadAlunosTable();
                 });
             });
         }
-        
+
         function goToPage(page) {
             if (page >= 1 && page <= totalPages && page !== currentPage) {
                 currentPage = page;
                 loadAlunosTable();
             }
         }
-        
+
         function updateBulkActions() {
             const bulkActions = document.querySelector('[data-testid="bulk-actions"]');
             const selectedCount = document.getElementById('selected-count');
             const selectAllCheckbox = document.getElementById('select-all');
-            
+
             selectedCount.textContent = selectedAlunos.size;
-            
+
             if (selectedAlunos.size > 0) {
                 bulkActions.style.display = 'flex';
-                
+
                 // Atualizar checkbox "selecionar todos"
                 const totalCheckboxes = document.querySelectorAll('.select-aluno').length;
                 const checkedCheckboxes = document.querySelectorAll('.select-aluno:checked').length;
@@ -656,13 +548,13 @@
                 bulkActions.style.display = 'none';
                 selectAllCheckbox.indeterminate = false;
             }
-            
+
             // Configurar eventos dos botões de ações em massa
-            document.getElementById('bulk-edit').onclick = () => bulkEditAlunos();
-            document.getElementById('bulk-delete').onclick = () => bulkDeleteAlunos();
-            document.getElementById('clear-selection').onclick = () => clearSelection();
+            document.getElementById('bulk-edit') && (document.getElementById('bulk-edit').onclick = bulkEditAlunos);
+            document.getElementById('bulk-delete') && (document.getElementById('bulk-delete').onclick = bulkDeleteAlunos);
+            document.getElementById('clear-selection') && (document.getElementById('clear-selection').onclick = clearSelection);
         }
-        
+
         function clearSelection() {
             selectedAlunos.clear();
             document.querySelectorAll('.select-aluno').forEach(checkbox => {
@@ -670,29 +562,28 @@
             });
             updateBulkActions();
         }
-        
+
         function openAlunoModal(alunoId = null) {
             const modal = document.getElementById('aluno-modal');
             const modalTitle = document.getElementById('modal-title');
             const alunoIdInput = document.getElementById('aluno-id');
-            
+
             // Resetar formulário
             document.getElementById('aluno-form-modal').reset();
-            
+
             // Limpar erros de validação
             document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
             document.querySelectorAll('.form-control').forEach(el => el.classList.remove('error'));
-            
+
             if (alunoId) {
                 // Modo edição
                 modalTitle.textContent = 'Editar Aluno';
                 const aluno = getAlunoById(alunoId);
-                
+
                 if (aluno) {
                     alunoIdInput.value = aluno.id;
                     document.getElementById('modal-nome').value = aluno.nome;
                     document.getElementById('modal-email').value = aluno.email;
-                    document.getElementById('modal-cpf').value = aluno.cpf; // Adicionado campo CPF
                     document.getElementById('modal-data-nascimento').value = aluno.dataNascimento;
                     document.getElementById('modal-curso').value = aluno.curso;
                     document.getElementById('modal-matricula').value = aluno.matricula || '';
@@ -704,23 +595,22 @@
                 // Modo adição
                 modalTitle.textContent = 'Adicionar Aluno';
                 alunoIdInput.value = '';
-                
+
                 // Gerar matrícula automática
                 const matricula = `AL${Date.now().toString().slice(-6)}`;
                 document.getElementById('modal-matricula').value = matricula;
             }
-            
+
             modal.style.display = 'flex';
         }
-        
+
         function saveAluno() {
             console.log('[v0] Salvando aluno');
             const alunoId = document.getElementById('aluno-id').value;
-            
+
             const alunoData = {
                 nome: document.getElementById('modal-nome').value.trim(),
                 email: document.getElementById('modal-email').value.trim(),
-                cpf: document.getElementById('modal-cpf').value.trim(),
                 dataNascimento: document.getElementById('modal-data-nascimento').value,
                 curso: document.getElementById('modal-curso').value,
                 matricula: document.getElementById('modal-matricula').value.trim(),
@@ -728,15 +618,15 @@
                 status: document.getElementById('modal-status').value,
                 endereco: document.getElementById('modal-endereco').value.trim()
             };
-            
+
             console.log('[v0] Dados do aluno:', alunoData);
-            
+
             // Validação
             if (!validateAlunoForm(alunoData)) {
                 console.error('[v0] Validação falhou');
                 return;
             }
-            
+
             if (alunoId) {
                 // Atualizar aluno existente
                 updateAluno(parseInt(alunoId), alunoData);
@@ -748,15 +638,15 @@
                 console.log('[v0] Novo aluno adicionado com ID:', newId);
                 showNotification('Aluno adicionado com sucesso!', 'success');
             }
-            
+
             // Fechar modal e recarregar tabela
             document.getElementById('aluno-modal').style.display = 'none';
             loadAlunosTable();
         }
-        
+
         function validateAlunoForm(data) {
             let isValid = true;
-            
+
             // Validar nome
             if (!data.nome) {
                 showFieldError('modal-nome', 'Nome é obrigatório');
@@ -764,7 +654,7 @@
             } else {
                 clearFieldError('modal-nome');
             }
-            
+
             // Validar email
             if (!data.email || !validateEmail(data.email)) {
                 showFieldError('modal-email', 'Email inválido');
@@ -772,18 +662,7 @@
             } else {
                 clearFieldError('modal-email');
             }
-            
-            // Validar CPF
-            if (!data.cpf) {
-                showFieldError('modal-cpf', 'CPF é obrigatório');
-                isValid = false;
-            } else if (!validateCPF(data.cpf)) {
-                showFieldError('modal-cpf', 'CPF inválido');
-                isValid = false;
-            } else {
-                clearFieldError('modal-cpf');
-            }
-            
+
             // Validar data de nascimento
             if (!data.dataNascimento) {
                 showFieldError('modal-data-nascimento', 'Data de nascimento é obrigatória');
@@ -791,7 +670,7 @@
             } else {
                 clearFieldError('modal-data-nascimento');
             }
-            
+
             // Validar curso
             if (!data.curso) {
                 showFieldError('modal-curso', 'Selecione um curso');
@@ -799,11 +678,11 @@
             } else {
                 clearFieldError('modal-curso');
             }
-            
+
             console.log('[v0] Validação resultado:', isValid);
             return isValid;
         }
-        
+
         function showFieldError(fieldId, message) {
             const field = document.getElementById(fieldId);
             const errorElement = document.querySelector(`[data-testid="${fieldId}-error"]`);
@@ -813,7 +692,7 @@
                 field.classList.add('error');
             }
         }
-        
+
         function clearFieldError(fieldId) {
             const field = document.getElementById(fieldId);
             const errorElement = document.querySelector(`[data-testid="${fieldId}-error"]`);
@@ -823,13 +702,12 @@
                 field.classList.remove('error');
             }
         }
-        
+
         function viewAluno(id) {
             const aluno = getAlunoById(id);
             if (aluno) {
                 alert(`Detalhes do Aluno:\n\n` +
                       `Nome: ${aluno.nome}\n` +
-                      `CPF: ${aluno.cpf}\n` + // Exibe CPF
                       `Email: ${aluno.email}\n` +
                       `Data de Nascimento: ${formatDate(aluno.dataNascimento)}\n` +
                       `Curso: ${getCursoNome(aluno.curso)}\n` +
@@ -838,22 +716,22 @@
                       `Data de Cadastro: ${formatDate(aluno.dataCadastro)}`);
             }
         }
-        
+
         function editAluno(id) {
             openAlunoModal(id);
         }
-        
+
         function confirmDeleteAluno(id, bulk = false) {
             const modal = document.getElementById('confirm-delete-modal');
             const message = document.getElementById('delete-message');
-            
+
             if (bulk) {
                 message.textContent = `Tem certeza que deseja excluir ${selectedAlunos.size} aluno(s) selecionado(s)?`;
             } else {
                 const aluno = getAlunoById(id);
                 message.textContent = `Tem certeza que deseja excluir o aluno "${aluno.nome}"?`;
             }
-            
+
             // Configurar botão de confirmação
             const confirmBtn = document.getElementById('confirm-delete-btn');
             confirmBtn.onclick = () => {
@@ -864,15 +742,15 @@
                 }
                 modal.style.display = 'none';
             };
-            
+
             modal.style.display = 'flex';
         }
-        
+
         function deleteAlunoConfirm(id) {
             if (deletarAluno(id)) {
                 showNotification('Aluno excluído com sucesso!', 'success');
                 loadAlunosTable();
-                
+
                 // Remover da seleção se estiver selecionado
                 selectedAlunos.delete(id);
                 updateBulkActions();
@@ -880,21 +758,21 @@
                 showNotification('Erro ao excluir aluno', 'error');
             }
         }
-        
+
         function bulkEditAlunos() {
             showNotification('Funcionalidade de edição em massa em desenvolvimento', 'info');
         }
-        
+
         function bulkDeleteAlunos() {
             if (selectedAlunos.size > 0) {
                 confirmDeleteAluno(null, true);
             }
         }
-        
+
         function bulkDeleteAlunosConfirm() {
             let successCount = 0;
             let errorCount = 0;
-            
+
             selectedAlunos.forEach(id => {
                 if (deletarAluno(id)) {
                     successCount++;
@@ -902,10 +780,10 @@
                     errorCount++;
                 }
             });
-            
+
             // Limpar seleção
             clearSelection();
-            
+
             // Mostrar resultado
             if (successCount > 0) {
                 showNotification(`${successCount} aluno(s) excluído(s) com sucesso!`, 'success');
@@ -913,43 +791,43 @@
             if (errorCount > 0) {
                 showNotification(`Erro ao excluir ${errorCount} aluno(s)`, 'error');
             }
-            
+
             // Recarregar tabela
             loadAlunosTable();
         }
-        
+
         function exportAlunos() {
             const alunos = getAlunos();
-            
+
             // Criar CSV
-            let csv = 'Nome,CPF,Email,Curso,Status,Data de Cadastro\n'; // Adicionado CPF
-            
+            let csv = 'Nome,CPF,Email,Curso,Status,Data de Cadastro\n';
+
             alunos.forEach(aluno => {
                 csv += `"${aluno.nome}","${aluno.cpf}","${aluno.email}","${getCursoNome(aluno.curso)}","${getStatusText(aluno.status || 'ativo')}","${formatDate(aluno.dataCadastro)}"\n`;
             });
-            
+
             // Criar blob e download
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
             const url = URL.createObjectURL(blob);
-            
+
             link.setAttribute('href', url);
             link.setAttribute('download', `alunos_${new Date().toISOString().split('T')[0]}.csv`);
             link.style.visibility = 'hidden';
-            
+
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            
+
             showNotification('Exportação iniciada!', 'success');
         }
-        
+
         // Funções utilitárias
         function getAlunoColor(id) {
             const colors = ['#3498db', '#2ecc71', '#e74c3c', '#f39c12', '#9b59b6', '#1abc9c'];
             return colors[id % colors.length];
         }
-        
+
         function getCursoNome(cursoKey) {
             const cursos = {
                 'engenharia-software': 'Engenharia de Software',
@@ -959,7 +837,7 @@
             };
             return cursos[cursoKey] || cursoKey;
         }
-        
+
         function getStatusText(status) {
             const statusMap = {
                 'ativo': 'Ativo',
@@ -968,7 +846,7 @@
             };
             return statusMap[status] || status;
         }
-        
+
         function formatDate(dateString) {
             try {
                 const date = new Date(dateString);
@@ -977,61 +855,12 @@
                 return dateString;
             }
         }
-        
+
         function validateEmail(email) {
             const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             return regex.test(email);
         }
-        
-        // Nova função para validação de CPF
-        function validateCPF(cpf) {
-            cpf = cpf.replace(/[^\d]+/g, ''); // Remove caracteres não numéricos
-        
-            if (cpf.length !== 11 || 
-                cpf === "00000000000" || 
-                cpf === "11111111111" || 
-                cpf === "22222222222" || 
-                cpf === "33333333333" || 
-                cpf === "44444444444" || 
-                cpf === "55555555555" || 
-                cpf === "66666666666" || 
-                cpf === "77777777777" || 
-                cpf === "88888888888" || 
-                cpf === "99999999999") {
-                return false;
-            }
-        
-            let sum = 0;
-            let remainder;
-        
-            for (let i = 1; i <= 9; i++) {
-                sum = sum + parseInt(cpf.substring(i - 1, i)) * (11 - i);
-            }
-            remainder = (sum * 10) % 11;
-        
-            if (remainder === 10 || remainder === 11) {
-                remainder = 0;
-            }
-            if (remainder !== parseInt(cpf.substring(9, 10))) {
-                return false;
-            }
-        
-            sum = 0;
-            for (let i = 1; i <= 10; i++) {
-                sum = sum + parseInt(cpf.substring(i - 1, i)) * (12 - i);
-            }
-            remainder = (sum * 10) % 11;
-        
-            if (remainder === 10 || remainder === 11) {
-                remainder = 0;
-            }
-            if (remainder !== parseInt(cpf.substring(10, 11))) {
-                return false;
-            }
-        
-            return true;
-        }
-        
+
         function debounce(func, wait) {
             let timeout;
             return function executedFunction(...args) {
@@ -1043,7 +872,7 @@
                 timeout = setTimeout(later, wait);
             };
         }
-        
+
         function showNotification(message, type = 'info') {
             // Implementação simplificada
             alert(`${type.toUpperCase()}: ${message}`);

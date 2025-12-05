@@ -167,7 +167,6 @@ function searchAlunos(query) {
             aluno.nome.toLowerCase().includes(searchTerm) ||
             aluno.email.toLowerCase().includes(searchTerm) ||
             aluno.matricula?.toLowerCase().includes(searchTerm) ||
-            aluno.cpf?.toLowerCase().includes(searchTerm)
         );
     });
 }
